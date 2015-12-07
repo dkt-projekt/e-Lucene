@@ -1,0 +1,7 @@
+<repository name="repo1">
+	<index name="prueba1" analyzer="StandardAnalyzer" language="">
+		<field name="title" analyzer="StandardAnalyzer" language="es" />
+		<field name="body" analyzer="StandardAnalyzer" language="es" />
+		<field name="entities" analyzer="StandardAnalyzer" language="es" />
+	</index>
+</repository>

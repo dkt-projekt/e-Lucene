@@ -1,0 +1,1 @@
+This is a testing document that will be used for probing the lucene indexation capabilities and module.
