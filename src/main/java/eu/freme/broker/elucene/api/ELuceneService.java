@@ -1,5 +1,6 @@
 package eu.freme.broker.elucene.api;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import eu.freme.broker.elucene.exceptions.BadRequestException;
@@ -7,6 +8,8 @@ import eu.freme.broker.elucene.exceptions.ExternalServiceFailedException;
 import eu.freme.broker.elucene.indexmanagement.IndexFiles;
 import eu.freme.broker.elucene.indexmanagement.IndexesRepository;
 import eu.freme.broker.elucene.indexmanagement.SearchFiles;
+import eu.freme.broker.tools.ParameterChecker;
+import eu.freme.broker.tools.ResponseGenerator;
 
 /**
  * @author Julian Moreno Schneider julian.moreno_schneider@dfki.de
@@ -23,27 +26,20 @@ public class ELuceneService {
 	 * @throws ExternalServiceFailedException
 	 * @throws BadRequestException
 	 */
-	public String callLuceneExtraction(String text, String languageParam, String index, String sFields, String sAnalyzers,int hitsToReturn)//, String prefix, String dataset, int numLinks, ArrayList<String> rMode, String informat)
+	public ResponseEntity<String> callLuceneExtraction(String text, String languageParam, String index, String sFields, String sAnalyzers,int hitsToReturn)//, String prefix, String dataset, int numLinks, ArrayList<String> rMode, String informat)
             throws ExternalServiceFailedException, BadRequestException {
-    	if(languageParam==null || languageParam.equals("")){
-            throw new BadRequestException("Bad request: no language specified");
-    	}
-//    	if(fields==null){
-//            throw new BadRequestException("Bad request: no fields specified");
-//    	}
-    	if(index==null || index.equals("")){
-            throw new BadRequestException("Bad request: no index specified");
-    	}
-    	if(text==null || text.equals("")){
-            throw new BadRequestException("Bad request: no query text specified");
-    	}
+    	ParameterChecker.checkNotNullOrEmpty(languageParam, "language");
+    	ParameterChecker.checkNotNullOrEmpty(sFields, "fields");
+    	ParameterChecker.checkNotNullOrEmpty(sAnalyzers, "analyzers");
+    	ParameterChecker.checkNotNullOrEmpty(index, "index");
+    	ParameterChecker.checkNotNullOrEmpty(text, "document path");
         try {
 //            System.out.println(text);
 //            System.out.println(URLDecoder.decode(text, "UTF-8"));
 //            String nif = "Test for the service to be working";
         	String nif = SearchFiles.search(index, sFields, sAnalyzers, text, hitsToReturn);
 //            String nif = "We will return the document: " + text + " in the language: " + languageParam;
-            return nif;
+            return ResponseGenerator.successResponse(nif, "RDF/XML");
         } catch (Exception e) {
             throw new ExternalServiceFailedException(e.getMessage());
         }
@@ -60,30 +56,22 @@ public class ELuceneService {
      * @throws ExternalServiceFailedException
      * @throws BadRequestException
      */
-    public String callLuceneIndexing(String path, String docType, String languageParam,String sFields,String sAnalyzers,String index,boolean create)
+    public ResponseEntity<String> callLuceneIndexing(String inputType, String path, String docType, String languageParam,String sFields,String sAnalyzers,String index,boolean create)
             throws ExternalServiceFailedException, BadRequestException {
-    	if(languageParam==null || languageParam.equals("")){
-            throw new BadRequestException("Bad request: no language specified");
-    	}
-    	if(sFields==null){
-            throw new BadRequestException("Bad request: no fields specified");
-    	}
-    	if(sAnalyzers==null){
-            throw new BadRequestException("Bad request: no analyzers specified");
-    	}
-    	if(index==null || index.equals("")){
-            throw new BadRequestException("Bad request: no index specified");
-    	}
-    	if(path==null || path.equals("")){
-            throw new BadRequestException("Bad request: no document path specified");
-    	}
-        try {
+    	ParameterChecker.checkNotNullOrEmpty(inputType, "inputType [should be file/string] ");
+    	ParameterChecker.checkNotNullOrEmpty(languageParam, "language");
+    	ParameterChecker.checkNotNullOrEmpty(sFields, "fields");
+    	ParameterChecker.checkNotNullOrEmpty(sAnalyzers, "analyzers");
+    	ParameterChecker.checkNotNullOrEmpty(index, "index");
+    	ParameterChecker.checkNotNullOrEmpty(path, "document path");
+
+    	try {
         	if(IndexFiles.index(path, docType, index, create, sFields, sAnalyzers, languageParam)){
 
         		//TODO We must generate a NIF output containing  unique identifier for the document.
         		
         		String nif = "Document: " + path + " in language: " + languageParam + "has been correctly indexed in index: "+index;
-                return nif;
+                return ResponseGenerator.successResponse(nif, "RDF/XML");
         	}
         	else{
         		throw new ExternalServiceFailedException("ERROR at indexing document "+path+" in index "+index);

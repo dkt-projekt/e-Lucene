@@ -25,9 +25,9 @@ public class DocumentParserFactory {
 //		if(type.equalsIgnoreCase("json")){
 //			return JSONDocumentParser.parseDocument(path);
 //		}
-//		if(type.equalsIgnoreCase("nif")){
-//			return NIFDocumentParser.parseDocument(path);
-//		}
+		if(type.equalsIgnoreCase("nif")){
+			return new NIFDocumentParser();
+		}
 //		if(type.equalsIgnoreCase("turtle")){
 //			return TurtleDocumentParser.parseDocument(path);
 //		}

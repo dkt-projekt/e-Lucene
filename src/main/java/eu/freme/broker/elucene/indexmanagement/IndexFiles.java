@@ -11,25 +11,18 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import eu.freme.broker.elucene.exceptions.BadRequestException;
 import eu.freme.broker.elucene.exceptions.ExternalServiceFailedException;
 import eu.freme.broker.elucene.indexmanagement.analyzer.AnalyzerFactory;
 import eu.freme.broker.elucene.indexmanagement.documentparser.DocumentParserFactory;
 import eu.freme.broker.elucene.indexmanagement.documentparser.IDocumentParser;
+import eu.freme.broker.filemanagement.FileFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,6 +39,8 @@ public class IndexFiles {
 	
 	private static Version luceneVersion = Version.LUCENE_4_9;
 	
+	private static String indexDirectory  ="indexes/";
+
 	private IndexFiles() {}
 
 	/** Index a text file. */
@@ -72,26 +67,32 @@ public class IndexFiles {
 	 * @throws ExternalServiceFailedException
 	 */
 	public static boolean index(String docsPath,String docType, String index,boolean create, String sFields, String sAnalyzers, String language) throws IOException,ExternalServiceFailedException{
-
-		String indexDirectory  ="indexes/";
 		Date start = new Date();
 		logger.info("Indexing to directory '" + indexDirectory + index + "'...");
 //		System.out.println("Indexing to directory '" + indexDirectory + index + "'...");
-			
-		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext();
-		ClassPathResource indexResource = new ClassPathResource(indexDirectory + index);
-		if(!indexResource.exists()){
-			logger.info("Index folder does not exist, it will be created.");
-//			System.out.println("Index folder does not exist, it will be created.");
-			PathMatchingResourcePatternResolver pmr = new PathMatchingResourcePatternResolver();
-			Resource indexDirectoryResource = pmr.getResource(""+indexDirectory);
-			File f = indexDirectoryResource.getFile();
-			File f2 = new File(f, index+"/");
-			f2.mkdir();
+
+		File f;
+		if(create){
+			f = FileFactory.generateOrCreateDirectoryInstance(indexDirectory + index);
 		}
-		File f = indexResource.getFile();
+		else{
+			f = FileFactory.generateFileInstance(indexDirectory + index);
+		}
+		
+//		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext();
+//		ClassPathResource indexResource = new ClassPathResource(indexDirectory + index);
+//		if(!indexResource.exists()){
+//			logger.info("Index folder does not exist, it will be created.");
+////			System.out.println("Index folder does not exist, it will be created.");
+//			PathMatchingResourcePatternResolver pmr = new PathMatchingResourcePatternResolver();
+//			Resource indexDirectoryResource = pmr.getResource(""+indexDirectory);
+//			File f = indexDirectoryResource.getFile();
+//			File f2 = new File(f, index+"/");
+//			f2.mkdir();
+//		}
+//		File f = indexResource.getFile();
+//		ctx.close();
 		Directory dir = FSDirectory.open(f);
-		ctx.close();
 
 		IndexWriterConfig iwc = null;
 		Map<String, Analyzer> analyzerMap = new HashMap<String, Analyzer>();
@@ -132,7 +133,7 @@ public class IndexFiles {
 		// iwc.setRAMBufferSizeMB(256.0);
 
 		IndexWriter writer = new IndexWriter(dir, iwc);
-		indexDocs(writer, docsPath, docType);
+		indexDocs(writer, docsPath, docType, fields);
 
 		// NOTE: if you want to maximize search performance, you can optionally call forceMerge here.  This can be 
 		// a terribly costly operation, so generally it's only worth it when your index is relatively static 
@@ -155,28 +156,20 @@ public class IndexFiles {
 	 * @param docsPath The file to index, or the directory to recurse into to find files to index
 	 * @throws IOException If there is a low-level I/O error
 	 */
-	static void indexDocs(final IndexWriter writer, String docsPath, final String doctype) throws IOException,ExternalServiceFailedException {
-		ClassPathResource resource = new ClassPathResource(docsPath);
+	static void indexDocs(final IndexWriter writer, String docsPath, final String doctype, String fields[]) throws IOException,ExternalServiceFailedException {
+		File f = FileFactory.generateFileInstance(docsPath);
+//		ClassPathResource resource = new ClassPathResource(docsPath);
 //		System.out.println("SALIDA: "+resource.getPath() + "--" + resource.exists());
-		final Path path = Paths.get(resource.getFile().toURI());
-		if (Files.isDirectory(path)) {
-			Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-				@Override
-				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					try {
-						IDocumentParser documentParser = DocumentParserFactory.getDocumentParser(doctype);
-						Document doc = documentParser.parseDocumentFromFile(file.toString());
-						indexDoc(writer, doc, file);
-					} catch (Exception ignore) {
-						// don't index files that can't be read.
-					}
-					return FileVisitResult.CONTINUE;
-				}
-			});
+		final Path path = Paths.get(f.toURI());
+		if (f.isDirectory()) {
+			File[] files = f.listFiles();
+			for (File file : files) {
+				indexDocs(writer, file.getName(), doctype, fields);
+			}
 		} else {
 //			System.out.println(path.toUri().toString());
 			IDocumentParser documentParser = DocumentParserFactory.getDocumentParser(doctype);
-			Document doc = documentParser.parseDocumentFromFile(docsPath);
+			Document doc = documentParser.parseDocumentFromFile(docsPath,fields);
 			indexDoc(writer, doc, path);
 		}
 	}
@@ -205,4 +198,14 @@ public class IndexFiles {
 			throw e;
 		}
 	}
+
+	public static String getIndexDirectory() {
+		return indexDirectory;
+	}
+
+	public static void setIndexDirectory(String indexDirectory) {
+		IndexFiles.indexDirectory = indexDirectory;
+	}
+	
+	
 }

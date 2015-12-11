@@ -27,7 +27,7 @@ public class TXTDocumentParser implements IDocumentParser{
 	}
 	
 	@Override
-	public Document parseDocumentFromFile(String path) {
+	public Document parseDocumentFromFile(String path, String[] fields) {
 		try{
 			//For spring approach the next lines must be used
 			//ClassPathResource cpr = new ClassPathResource("classpath:"+path);
@@ -62,7 +62,7 @@ public class TXTDocumentParser implements IDocumentParser{
 	}
 
 	@Override
-	public Document parseDocumentFromString(String content) {
+	public Document parseDocumentFromString(String content, String[] fields) {
 		// TODO Auto-generated method stub
 		return null;
 	}

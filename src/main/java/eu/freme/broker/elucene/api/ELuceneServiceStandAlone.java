@@ -134,7 +134,7 @@ public class ELuceneServiceStandAlone {
         }
 
         try {
-            String lucenes = service.callLuceneIndexing(f2.getAbsolutePath(), fileType, language, sFields, sAnalyzers, index, create);
+            ResponseEntity<String> lucenes = service.callLuceneIndexing("file",f2.getAbsolutePath(), fileType, language, sFields, sAnalyzers, index, create);
             
             //TODO We should return a NIF structure with the initial description of the document.
 
@@ -148,7 +148,7 @@ public class ELuceneServiceStandAlone {
             
             String documentURI = "http://lucene.dfki.dkt.de/"+fileName;
 
-            String inputText = DocumentParserFactory.getDocumentParser(fileType).parseDocumentFromFile(f2.getAbsolutePath()).get("body");
+            String inputText = DocumentParserFactory.getDocumentParser(fileType).parseDocumentFromFile(f2.getAbsolutePath(),sFields.split(";")).get("content");
             int start = 0;
             int end = inputText.codePointCount(0, inputText.length());
             
@@ -246,8 +246,8 @@ public class ELuceneServiceStandAlone {
         }
 
         try {
-            String lucenes = service.callLuceneExtraction(text, language, index, sFields, sAnalyzers, hits);
-            return lucenes;
+            ResponseEntity<String> lucenes = service.callLuceneExtraction(text, language, index, sFields, sAnalyzers, hits);
+            return lucenes.getBody();
         } catch (BadRequestException e) {
             throw new BadRequestException(e.getMessage());
         } catch (ExternalServiceFailedException e) {

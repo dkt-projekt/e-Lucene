@@ -19,8 +19,8 @@ import org.springframework.core.io.ClassPathResource;
  */
 public interface IDocumentParser {
 
-	public Document parseDocumentFromFile (String path);
+	public Document parseDocumentFromFile (String path, String[] fields);
 
-	public Document parseDocumentFromString (String content);
+	public Document parseDocumentFromString (String content, String[] fields);
 
 }
