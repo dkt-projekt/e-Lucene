@@ -21,7 +21,7 @@ public class OwnQueryParser {
 	
 	
 	
-	public static Query parseQuery(String queryType, String queryContent, String[] fields, String [] analyzers){
+	public static Query parseQuery(String queryType, String queryContent, String[] fields, String [] analyzers, String language){
 		BooleanQuery booleanQuery = new BooleanQuery();
 		
 		try{
@@ -51,7 +51,7 @@ public class OwnQueryParser {
 				List<String[]> entities = NIFReader.extractEntities(nifModel);
 
 				
-				Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], null, luceneVersion);
+				Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], language, luceneVersion);
 				QueryParser parser1 = new QueryParser(Version.LUCENE_4_9,"content", analyzer);
 				Query query1 = parser1.parse(textContent);
 				booleanQuery.add(query1, BooleanClause.Occur.SHOULD);
@@ -69,16 +69,19 @@ public class OwnQueryParser {
 				tempString = (tempString.equals("")) ? tempString : tempString.substring(1);
 				entString = (entString.equals("")) ? entString : entString.substring(1);
 
-				Analyzer nerAnalyzer = AnalyzerFactory.getAnalyzer("NERAnalyzer",null/*language*/,luceneVersion);
-				QueryParser parserNER = new QueryParser(Version.LUCENE_4_9,"entities", nerAnalyzer);
-				Query queryNER = parserNER.parse(entString);
-				booleanQuery.add(queryNER, BooleanClause.Occur.SHOULD);
+				if(!entString.equals("")){
+					Analyzer nerAnalyzer = AnalyzerFactory.getAnalyzer("NERAnalyzer",null/*language*/,luceneVersion);
+					QueryParser parserNER = new QueryParser(Version.LUCENE_4_9,"entities", nerAnalyzer);
+					Query queryNER = parserNER.parse(entString);
+					booleanQuery.add(queryNER, BooleanClause.Occur.SHOULD);
+				}
 				
-				Analyzer tempAnalyzer = AnalyzerFactory.getAnalyzer("TEMPAnalyzer",null/*language*/,luceneVersion);
-				QueryParser parserTEMP = new QueryParser(Version.LUCENE_4_9,"temporals", tempAnalyzer);
-				Query queryTEMP = parserTEMP.parse(tempString);
-				booleanQuery.add(queryTEMP, BooleanClause.Occur.SHOULD);
-				
+				if(!tempString.equals("")){
+					Analyzer tempAnalyzer = AnalyzerFactory.getAnalyzer("TEMPAnalyzer",null/*language*/,luceneVersion);
+					QueryParser parserTEMP = new QueryParser(Version.LUCENE_4_9,"temporals", tempAnalyzer);
+					Query queryTEMP = parserTEMP.parse(tempString);
+					booleanQuery.add(queryTEMP, BooleanClause.Occur.SHOULD);
+				}
 			}
 		}
 		catch(Exception e){

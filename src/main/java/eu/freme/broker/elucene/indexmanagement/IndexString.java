@@ -37,7 +37,7 @@ public class IndexString {
 	
 	private static Version luceneVersion = Version.LUCENE_4_9;
 	
-	private static String indexDirectory  ="indexes/";
+	private static String indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/testComplete/lucenestorage/";
 
 	private IndexString() {}
 
@@ -132,6 +132,7 @@ public class IndexString {
 			}
 		}
 		catch (IOException e){
+			e.printStackTrace();
 			throw e;
 		}
 		finally{

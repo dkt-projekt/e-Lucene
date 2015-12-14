@@ -16,6 +16,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
+import eu.freme.broker.exception.ExternalServiceFailedException;
 import eu.freme.broker.niftools.NIFReader;
 import eu.freme.common.conversion.rdf.JenaRDFConversionService;
 import eu.freme.common.conversion.rdf.RDFConstants.RDFSerialization;
@@ -44,7 +45,6 @@ public class NIFDocumentParser implements IDocumentParser{
 			//For spring approach the next lines must be used
 			//ClassPathResource cpr = new ClassPathResource("classpath:"+path);
 			//BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(cpr.getFile()), "utf-8"));
-			Document doc = new Document();
 
 			BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), "utf-8"));
 			String line = br.readLine();
@@ -57,7 +57,21 @@ public class NIFDocumentParser implements IDocumentParser{
 				line = br.readLine();
 			}
 			br.close();
+			
+			return parseDocumentFromString(content, fields);
 
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public Document parseDocumentFromString(String content, String[] fields) {
+		try{
+			Document doc = new Document();
+	
 			Model model = rdfconversion.unserializeRDF(content, RDFSerialization.RDF_XML);
 			
 			String fields2 [] = fields;
@@ -108,18 +122,13 @@ public class NIFDocumentParser implements IDocumentParser{
 				}
 				doc.add(new TextField(fieldString, text, store));
 			}
-//			doc.add(new TextField("contents", new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
+	//		doc.add(new TextField("contents", new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
 			return doc;
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			return null;
+			throw new ExternalServiceFailedException(e.getMessage());
 		}
 	}
 
-	@Override
-	public Document parseDocumentFromString(String content, String[] fields) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

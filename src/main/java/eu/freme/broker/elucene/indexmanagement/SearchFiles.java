@@ -57,7 +57,7 @@ public class SearchFiles {
 
 	private static Version luceneVersion = Version.LUCENE_4_9;
 	
-	private static String indexDirectory  ="indexes/";
+	private static String indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/testComplete/lucenestorage/";
 	
 	private SearchFiles() {}
 
@@ -76,13 +76,13 @@ public class SearchFiles {
 	 * @return JSON format string containing the results information and content
 	 * @throws ExternalServiceFailedException
 	 */
-	public static String search(String index,String sFields, String sAnalyzers, String queryType, String queryString, int hitsToReturn) throws ExternalServiceFailedException {
+	public static String search(String index,String sFields, String sAnalyzers, String queryType, String queryString, String language, int hitsToReturn) throws ExternalServiceFailedException {
 		try{
 			Date start = new Date();
 
 			File f = FileFactory.generateFileInstance(indexDirectory + index);
-			if(!f.exists()){
-				throw new ExternalServiceFailedException("Specified index does not exists.");
+			if(f==null || !f.exists()){
+				throw new ExternalServiceFailedException("Specified index ["+indexDirectory + index+"] does not exists.");
 			}
 			Directory dir = FSDirectory.open(f);
 			IndexReader reader = DirectoryReader.open(dir);
@@ -97,7 +97,7 @@ public class SearchFiles {
 				throw new BadRequestException("The number of fields and analyzers is different");
 			}
 			
-			Query query = OwnQueryParser.parseQuery(queryType, queryString, fields, analyzers);
+			Query query = OwnQueryParser.parseQuery(queryType, queryString, fields, analyzers, language);
 			
 			TopDocs results = searcher.search(query, hitsToReturn);
 			reader.close();

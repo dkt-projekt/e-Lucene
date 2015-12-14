@@ -38,10 +38,11 @@ public class ELuceneService {
 //            System.out.println(text);
 //            System.out.println(URLDecoder.decode(text, "UTF-8"));
 //            String nif = "Test for the service to be working";
-        	String nif = SearchFiles.search(index, sFields, sAnalyzers, queryType, text, hitsToReturn);
+        	String nif = SearchFiles.search(index, sFields, sAnalyzers, queryType, text, languageParam, hitsToReturn);
 //            String nif = "We will return the document: " + text + " in the language: " + languageParam;
             return ResponseGenerator.successResponse(nif, "RDF/XML");
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new ExternalServiceFailedException(e.getMessage());
         }
     }
@@ -65,7 +66,14 @@ public class ELuceneService {
     	ParameterChecker.checkNotNullOrEmpty(sAnalyzers, "analyzers");
     	ParameterChecker.checkNotNullOrEmpty(index, "index");
     	ParameterChecker.checkNotNullOrEmpty(path, "document path");
-
+    	System.out.println(inputType);
+    	System.out.println(languageParam);
+    	System.out.println(sFields);
+    	System.out.println(sAnalyzers);
+    	System.out.println(index);
+    	System.out.println(path);
+    	System.out.println(create);
+    	System.out.println();
     	try {
     		if(inputType.equalsIgnoreCase("file")){
             	if(IndexFiles.index(path, docType, index, create, sFields, sAnalyzers, languageParam)){
@@ -86,6 +94,7 @@ public class ELuceneService {
             	}
     		}
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new ExternalServiceFailedException(e.getMessage());
         }
     }
@@ -122,6 +131,39 @@ public class ELuceneService {
 		catch(Exception e){
 			throw new ExternalServiceFailedException("ERROR retrieveing information form repository "+repositoryName);
 		}
+	}
+	
+	public static void main(String[] args) {
+	    ELuceneService service = new ELuceneService();
+//	    service.callLuceneIndexing("string", " It has been correctly added to the tripletSTore: test1/", "NIF", "de","content", "standard","test1/",true);
+		
+	    String input = "<rdf:RDF"+
+    " xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\""+
+    " xmlns:itsrdf=\"http://www.w3.org/2005/11/its/rdf#\""+
+   " xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\""+
+  "  xmlns:xsd=\"http://www.w3.org/2001/XMLSchema#\""+
+ "   xmlns:nif=\"http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#\" > "+
+"  <rdf:Description rdf:about=\"http://dkt.dfki.de/query#char=0,6\">"+
+   " <rdf:type rdf:resource=\"http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#Context\"/>"+
+  "  <rdf:type rdf:resource=\"http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#String\"/>"+
+ "   <rdf:type rdf:resource=\"http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#RFC5147String\"/>"+
+"    <nif:isString rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">Madrid</nif:isString>"+
+    "<nif:beginIndex rdf:datatype=\"http://www.w3.org/2001/XMLSchema#nonNegativeInteger\">0</nif:beginIndex>"+
+   " <nif:endIndex rdf:datatype=\"http://www.w3.org/2001/XMLSchema#nonNegativeInteger\">6</nif:endIndex>"+
+  " </rdf:Description>"+
+ " <rdf:Description rdf:about=\"http://dkt.dfki.de/examples/#char=0,6\">"+
+"    <nif:entity rdf:resource=\"http://dummy.LOC\"/>"+
+   " <itsrdf:taIdentRef rdf:resource=\"http://dummy.com\"/>"+
+  "  <nif:endIndex rdf:datatype=\"http://www.w3.org/2001/XMLSchema#nonNegativeInteger\">6</nif:endIndex>"+
+ "   <nif:beginIndex rdf:datatype=\"http://www.w3.org/2001/XMLSchema#nonNegativeInteger\">0</nif:beginIndex>"+
+"    <nif:anchorOf rdf:datatype=\"http://www.w3.org/2001/XMLSchema#string\">Madrid</nif:anchorOf>"+
+   " <rdf:type rdf:resource=\"http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#RFC5147String\"/>"+
+  "  <rdf:type rdf:resource=\"http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#String\"/>"+
+ " </rdf:Description>"+
+" </rdf:RDF>";
+
+	    service.callLuceneExtraction("NIF", input, "de","test1/", "content", "standard", 20);
+
 	}
 
 }
