@@ -1,29 +1,29 @@
 package eu.freme.broker.elucene.indexmanagement;
 
-import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig.OpenMode;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
-
-import eu.freme.broker.elucene.exceptions.BadRequestException;
-import eu.freme.broker.elucene.exceptions.ExternalServiceFailedException;
-import eu.freme.broker.elucene.indexmanagement.analyzer.AnalyzerFactory;
-import eu.freme.broker.elucene.indexmanagement.documentparser.DocumentParserFactory;
-import eu.freme.broker.elucene.indexmanagement.documentparser.IDocumentParser;
-import eu.freme.broker.filemanagement.FileFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
+
+import eu.freme.broker.elucene.indexmanagement.analyzer.AnalyzerFactory;
+import eu.freme.broker.elucene.indexmanagement.documentparser.DocumentParserFactory;
+import eu.freme.broker.elucene.indexmanagement.documentparser.IDocumentParser;
+import eu.freme.broker.exception.BadRequestException;
+import eu.freme.broker.exception.ExternalServiceFailedException;
+import eu.freme.broker.filemanagement.FileFactory;
 
 /**
  * Configures Lucene indexing files

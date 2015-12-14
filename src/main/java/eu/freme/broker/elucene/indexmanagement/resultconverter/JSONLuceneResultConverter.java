@@ -9,7 +9,7 @@ import org.apache.lucene.search.TopDocs;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import eu.freme.broker.elucene.exceptions.ExternalServiceFailedException;
+import eu.freme.broker.exception.ExternalServiceFailedException;
 
 public class JSONLuceneResultConverter {
 	

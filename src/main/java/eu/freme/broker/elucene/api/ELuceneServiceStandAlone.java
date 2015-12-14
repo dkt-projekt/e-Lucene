@@ -29,9 +29,9 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-import eu.freme.broker.elucene.exceptions.BadRequestException;
-import eu.freme.broker.elucene.exceptions.ExternalServiceFailedException;
 import eu.freme.broker.elucene.indexmanagement.documentparser.DocumentParserFactory;
+import eu.freme.broker.exception.BadRequestException;
+import eu.freme.broker.exception.ExternalServiceFailedException;
 import eu.freme.broker.niftools.NIF;
 
 /**
@@ -246,7 +246,7 @@ public class ELuceneServiceStandAlone {
         }
 
         try {
-            ResponseEntity<String> lucenes = service.callLuceneExtraction(text, language, index, sFields, sAnalyzers, hits);
+            ResponseEntity<String> lucenes = service.callLuceneExtraction("nif", text, language, index, sFields, sAnalyzers, hits);
             return lucenes.getBody();
         } catch (BadRequestException e) {
             throw new BadRequestException(e.getMessage());

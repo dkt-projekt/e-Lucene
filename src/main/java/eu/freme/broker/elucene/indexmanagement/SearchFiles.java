@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
@@ -37,10 +38,12 @@ import org.apache.lucene.util.Version;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
 
-import eu.freme.broker.elucene.exceptions.BadRequestException;
-import eu.freme.broker.elucene.exceptions.ExternalServiceFailedException;
 import eu.freme.broker.elucene.indexmanagement.analyzer.AnalyzerFactory;
+import eu.freme.broker.elucene.indexmanagement.queryparser.OwnQueryParser;
 import eu.freme.broker.elucene.indexmanagement.resultconverter.JSONLuceneResultConverter;
+import eu.freme.broker.exception.BadRequestException;
+import eu.freme.broker.exception.ExternalServiceFailedException;
+import eu.freme.broker.filemanagement.FileFactory;
 
 /**
  * Configures searching files in Lucene
@@ -52,7 +55,9 @@ public class SearchFiles {
 
 	static Logger logger = Logger.getLogger(SearchFiles.class);
 
-	static Version luceneVersion = Version.LUCENE_4_9;
+	private static Version luceneVersion = Version.LUCENE_4_9;
+	
+	private static String indexDirectory  ="indexes/";
 	
 	private SearchFiles() {}
 
@@ -71,26 +76,18 @@ public class SearchFiles {
 	 * @return JSON format string containing the results information and content
 	 * @throws ExternalServiceFailedException
 	 */
-	public static String search(String index,String sFields, String sAnalyzers, String queryString, int hitsToReturn) throws ExternalServiceFailedException {
+	public static String search(String index,String sFields, String sAnalyzers, String queryType, String queryString, int hitsToReturn) throws ExternalServiceFailedException {
 		try{
-			String indexDirectory = "indexes/";
 			Date start = new Date();
 
-			ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext();
-				
-			Resource indexResource = ctx.getResource("classpath:"+indexDirectory + index);
-			if(!indexResource.exists()){
-				ctx.close();
+			File f = FileFactory.generateFileInstance(indexDirectory + index);
+			if(!f.exists()){
 				throw new ExternalServiceFailedException("Specified index does not exists.");
 			}
-
-			File f = indexResource.getFile();
 			Directory dir = FSDirectory.open(f);
 			IndexReader reader = DirectoryReader.open(dir);
 			IndexSearcher searcher = new IndexSearcher(reader);
 
-			ctx.close();
-			
 //			System.out.println(reader.numDocs());
 //			System.out.println(reader.document(0).toString());
 			String[] fields = sFields.split(";");
@@ -100,43 +97,20 @@ public class SearchFiles {
 				throw new BadRequestException("The number of fields and analyzers is different");
 			}
 			
-			BooleanQuery booleanQuery = new BooleanQuery();
+			Query query = OwnQueryParser.parseQuery(queryType, queryString, fields, analyzers);
 			
-			if(fields.length==1){
-				Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], null, luceneVersion);
-				QueryParser parser1 = new QueryParser(Version.LUCENE_4_9,"title", analyzer);
-				Query query1 = parser1.parse(queryString);
-				booleanQuery.add(query1, BooleanClause.Occur.SHOULD);
-			}
-			else{
-				/**
-				 * When each field has to be analyzed with a different analyzer.
-				 */
-				for (int i = 0; i < fields.length; i++) {
-					Analyzer particularAnalyzer = AnalyzerFactory.getAnalyzer(analyzers[i],null/*language*/,luceneVersion);
-					QueryParser parser1 = new QueryParser(Version.LUCENE_4_9,"title", particularAnalyzer);
-					Query query1 = parser1.parse(queryString);
-					booleanQuery.add(query1, BooleanClause.Occur.SHOULD);
-				}
-			}
-			
-			TopDocs results = searcher.search(booleanQuery, hitsToReturn);
+			TopDocs results = searcher.search(query, hitsToReturn);
 			reader.close();
 
 			Date end = new Date();
 			logger.info("Time: "+(end.getTime()-start.getTime())+"ms");
 //			System.out.println("Time: "+(end.getTime()-start.getTime())+"ms");
 
-			//TODO Add more types of output (NIF, RDF, plaintext, etc.).
-			return JSONLuceneResultConverter.convertResults(booleanQuery, searcher, results);
+			return JSONLuceneResultConverter.convertResults(query, searcher, results);
 		}
 		catch(IOException e){
 			e.printStackTrace();
 			throw new ExternalServiceFailedException("IOException with message: "+e.getMessage());
-		}
-		catch (ParseException e) {
-			e.printStackTrace();
-			throw new ExternalServiceFailedException("ParseException with message: "+e.getMessage());
 		}
 	}
 }

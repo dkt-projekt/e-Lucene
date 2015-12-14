@@ -1,8 +1,6 @@
 package eu.freme.broker.elucene.indexmanagement.documentparser;
 
-import org.apache.lucene.document.Document;
-
-import eu.freme.broker.elucene.exceptions.ExternalServiceFailedException;
+import eu.freme.broker.exception.ExternalServiceFailedException;
 
 /**
  * @author jmschnei

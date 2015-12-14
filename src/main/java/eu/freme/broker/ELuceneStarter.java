@@ -15,12 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.freme.broker.elucene.exceptions;
+package eu.freme.broker;
 
-public class ExternalServiceFailedException extends Exception {
-	private static final long serialVersionUID = 1L;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 
-	public ExternalServiceFailedException(String message) {
-		super(message);
-	}
+import eu.freme.broker.tools.StarterHelper;
+
+@SpringBootApplication
+@Import(ELuceneConfig.class)
+public class ELuceneStarter {
+    public static void main(String[] args) {
+		String[] newArgs = StarterHelper.addProfile(args, "broker");
+        SpringApplication.run(ELuceneStarter.class, newArgs);
+    }
 }

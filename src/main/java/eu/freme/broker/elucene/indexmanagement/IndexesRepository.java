@@ -16,15 +16,6 @@
  */
 package eu.freme.broker.elucene.indexmanagement;
 
-import org.springframework.core.io.ClassPathResource;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import eu.freme.broker.elucene.exceptions.BadRequestException;
-import eu.freme.broker.elucene.exceptions.ExternalServiceFailedException;
-
 import java.io.File;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -32,6 +23,15 @@ import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.springframework.core.io.ClassPathResource;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import eu.freme.broker.exception.BadRequestException;
+import eu.freme.broker.exception.ExternalServiceFailedException;
 
 /**
  * Handles index repositories and offers information about repositories and indexes

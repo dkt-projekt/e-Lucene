@@ -12,6 +12,13 @@ import org.apache.lucene.util.Version;
 public class AnalyzerFactory {
 
 	public static Analyzer getAnalyzer(String analyzer,String language,Version matchVersion){
+		
+		if(analyzer.equalsIgnoreCase("NERAnalyzer")){
+			return new NERAnalyzer();
+		}
+		if(analyzer.equalsIgnoreCase("TEMPAnalyzer")){
+			return new TEMPAnalyzer();
+		}
 		if(language.equalsIgnoreCase("spanish") || language.equalsIgnoreCase("es") || language.equalsIgnoreCase("spa")){
 			if(analyzer.equalsIgnoreCase("standard")){
 				return new SpanishAnalyzer(matchVersion);
