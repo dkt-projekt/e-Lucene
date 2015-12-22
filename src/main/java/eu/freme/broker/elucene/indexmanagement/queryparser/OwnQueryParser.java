@@ -3,6 +3,7 @@ package eu.freme.broker.elucene.indexmanagement.queryparser;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -60,25 +61,33 @@ public class OwnQueryParser {
 				String tempString = "";
 				for (int i = 0; i < entities.size(); i++) {
 					if(entities.get(i)[2].contains("DAT")){
-						tempString += ";" + entities.get(i)[0];
+						
+						
+						tempString += " " + entities.get(i)[0];
 					}
 					else{
-						entString += ";" + entities.get(i)[0];
+						entString += " " + entities.get(i)[0];
 					}
 				}
+				entString = scapeStringForLuceneQuery(entString);
+				tempString = scapeStringForLuceneQuery(tempString);
 				tempString = (tempString.equals("")) ? tempString : tempString.substring(1);
 				entString = (entString.equals("")) ? entString : entString.substring(1);
-
+				
 				if(!entString.equals("")){
-					Analyzer nerAnalyzer = AnalyzerFactory.getAnalyzer("NERAnalyzer",null/*language*/,luceneVersion);
-					QueryParser parserNER = new QueryParser(Version.LUCENE_4_9,"entities", nerAnalyzer);
+					//Analyzer nerAnalyzer = AnalyzerFactory.getAnalyzer("NERAnalyzer",language,luceneVersion);
+//					QueryParser parserNER = new QueryParser(Version.LUCENE_4_9,"entities", nerAnalyzer);
+					QueryParser parserNER = new QueryParser(Version.LUCENE_4_9,"entities", new WhitespaceAnalyzer(Version.LUCENE_4_9));
+//					System.out.println("ENTSTRING: "+entString);
 					Query queryNER = parserNER.parse(entString);
+//					System.out.println("QUERY: "+queryNER.toString());
 					booleanQuery.add(queryNER, BooleanClause.Occur.SHOULD);
 				}
 				
 				if(!tempString.equals("")){
-					Analyzer tempAnalyzer = AnalyzerFactory.getAnalyzer("TEMPAnalyzer",null/*language*/,luceneVersion);
-					QueryParser parserTEMP = new QueryParser(Version.LUCENE_4_9,"temporals", tempAnalyzer);
+//					Analyzer tempAnalyzer = AnalyzerFactory.getAnalyzer("TEMPAnalyzer",language,luceneVersion);
+//					QueryParser parserTEMP = new QueryParser(Version.LUCENE_4_9,"temporals", tempAnalyzer);
+					QueryParser parserTEMP = new QueryParser(Version.LUCENE_4_9,"temporals", new WhitespaceAnalyzer(Version.LUCENE_4_9));
 					Query queryTEMP = parserTEMP.parse(tempString);
 					booleanQuery.add(queryTEMP, BooleanClause.Occur.SHOULD);
 				}
@@ -91,5 +100,28 @@ public class OwnQueryParser {
 		
 		return booleanQuery;
 		
+	}
+	
+	public static String scapeStringForLuceneQuery(String s){
+		s = s.replaceAll("\\\\", "\\\\\\\\");
+		s = s.replaceAll("\\+", "\\\\\\+");
+		s = s.replaceAll("\\-", "\\\\\\-");
+		s = s.replaceAll("&", "\\\\&");
+		s = s.replaceAll("\\|", "\\\\\\|");
+		s = s.replaceAll("!", "\\\\!");
+		s = s.replaceAll("\\(", "\\\\\\(");
+		s = s.replaceAll("\\)", "\\\\\\)");
+		s = s.replaceAll("\\[", "\\\\\\[");
+		s = s.replaceAll("\\]", "\\\\\\]");
+		s = s.replaceAll("\\{", "\\\\\\{");
+		s = s.replaceAll("\\}", "\\\\\\}");
+		s = s.replaceAll("\\^", "\\\\\\^");
+		s = s.replaceAll("\"", "\\\\\"");
+		s = s.replaceAll("~", "\\\\~");
+		s = s.replaceAll("\\*", "\\\\\\*");
+		s = s.replaceAll("\\?", "\\\\\\?");
+		s = s.replaceAll(":", "\\\\:");
+		s = s.replaceAll("/", "\\\\/");
+		return s;
 	}
 }

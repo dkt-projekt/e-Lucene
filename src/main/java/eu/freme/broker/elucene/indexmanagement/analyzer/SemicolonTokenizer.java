@@ -37,11 +37,14 @@ public class SemicolonTokenizer extends Tokenizer {
     @Override
     public boolean incrementToken() throws IOException {
 
+    	
+    	
+//    	System.out.println("We come inside the NERTokenizer metho...");
         // Clear anything that is already saved in this.charTermAttribute
         this.charTermAttribute.setEmpty();
 
         // Get the position of the next + symbol
-        int nextIndex = this.stringToTokenize.indexOf('+', this.position);
+        int nextIndex = this.stringToTokenize.indexOf(';', this.position);
 
         // Execute this block if a semicolon was found. Save the token and the position to start at when incrementToken() is next called.
         if (nextIndex != -1) {
@@ -57,7 +60,10 @@ public class SemicolonTokenizer extends Tokenizer {
                 this.stringToTokenize.substring(this.position);
             this.charTermAttribute.append(nextToken);
             this.position = this.stringToTokenize.length();
-            return true;
+
+  //      	System.out.println("... we finished it with token: "+nextToken);
+
+        	return true;
         }
 
         // Execute this block if no more tokens exist in the string.
@@ -85,6 +91,7 @@ public class SemicolonTokenizer extends Tokenizer {
             throw new RuntimeException(e);
         }
         this.stringToTokenize = stringBuilder.toString();
+//        System.out.println(stringToTokenize);
     }
 
 }

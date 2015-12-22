@@ -162,8 +162,8 @@ public class ELuceneService {
  " </rdf:Description>"+
 " </rdf:RDF>";
 
-	    service.callLuceneExtraction("NIF", input, "de","test1/", "content", "standard", 20);
-
+	    ResponseEntity<String> resp = service.callLuceneExtraction("NIF", input, "de","test1/", "content", "standard", 20);
+	    System.out.println(resp.getBody());
 	}
 
 }

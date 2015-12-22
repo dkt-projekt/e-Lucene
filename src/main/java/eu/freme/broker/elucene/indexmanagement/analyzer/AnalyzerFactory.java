@@ -1,6 +1,7 @@
 package eu.freme.broker.elucene.indexmanagement.analyzer;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.util.Version;
@@ -18,6 +19,9 @@ public class AnalyzerFactory {
 		}
 		if(analyzer.equalsIgnoreCase("TEMPAnalyzer")){
 			return new TEMPAnalyzer();
+		}
+		if(analyzer.equalsIgnoreCase("WhiteSpace")){
+			return new WhitespaceAnalyzer(matchVersion);
 		}
 		if(language.equalsIgnoreCase("spanish") || language.equalsIgnoreCase("es") || language.equalsIgnoreCase("spa")){
 			if(analyzer.equalsIgnoreCase("standard")){

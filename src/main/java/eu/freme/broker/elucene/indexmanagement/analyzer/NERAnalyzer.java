@@ -3,7 +3,10 @@ package eu.freme.broker.elucene.indexmanagement.analyzer;
 import java.io.Reader;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.util.Version;
 
 public class NERAnalyzer extends Analyzer{
 
@@ -14,8 +17,7 @@ public class NERAnalyzer extends Analyzer{
 	@Override
 	protected TokenStreamComponents createComponents(String field,Reader reader) {
 		Tokenizer tokenizer = new SemicolonTokenizer(reader);
-//		TokenStream filter = new EmptyStringTokenFilter(tokenizer);
-//		filter = new LowerCaseFilte(filter);
-		return new TokenStreamComponents(tokenizer, null);
+		TokenStream filter = new LowerCaseFilter(Version.LUCENE_4_9,tokenizer);
+		return new TokenStreamComponents(tokenizer, filter);
 	}
 }

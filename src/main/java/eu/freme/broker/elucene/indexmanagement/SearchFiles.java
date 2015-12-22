@@ -100,13 +100,14 @@ public class SearchFiles {
 			Query query = OwnQueryParser.parseQuery(queryType, queryString, fields, analyzers, language);
 			
 			TopDocs results = searcher.search(query, hitsToReturn);
-			reader.close();
 
 			Date end = new Date();
 			logger.info("Time: "+(end.getTime()-start.getTime())+"ms");
 //			System.out.println("Time: "+(end.getTime()-start.getTime())+"ms");
 
-			return JSONLuceneResultConverter.convertResults(query, searcher, results);
+			String resultString = JSONLuceneResultConverter.convertResults(query, searcher, results);
+			reader.close();
+			return resultString;
 		}
 		catch(IOException e){
 			e.printStackTrace();

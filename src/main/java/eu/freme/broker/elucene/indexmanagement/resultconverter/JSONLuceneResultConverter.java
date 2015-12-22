@@ -21,36 +21,52 @@ public class JSONLuceneResultConverter {
 			int numTotalHits = results.totalHits;
 			System.out.println(numTotalHits + " total matching documents");
 			JSONObject obj = new JSONObject();
-			obj.put("querytext", query.toString());
-			obj.put("indexName", "TODO include name of the index");
-			JSONArray list = new JSONArray();
+			JSONArray listResults = new JSONArray();
+			JSONObject joResults = new JSONObject();
+			listResults.put(new JSONObject().put("querytext", query.toString()));
+			listResults.put(new JSONObject().put("numberResults", numTotalHits));
+			joResults.put("querytext", query.toString());
+			joResults.put("numberResults", numTotalHits);
+//			listResults.put(new JSONObject().put("", ));
+			
+			JSONObject joDocuments = new JSONObject();
+			for (int i = 0; i < numTotalHits; i++) {
+				JSONObject resultJSON = new JSONObject();
+				Document doc = searcher.doc(hits[i].doc);
+				resultJSON.put("docId", i+1);
+				resultJSON.put("path", doc.get("path"));
+				resultJSON.put("pathnif", doc.get("pathnif"));
+				resultJSON.put("docURI", doc.get("docURI"));
+				resultJSON.put("content", doc.get("content"));
+				resultJSON.put("entities", doc.get("entities"));
+				resultJSON.put("temporals", doc.get("temporals"));
+				resultJSON.put("score", hits[i].score);
+				joDocuments.put("document"+(i+1),resultJSON);
+			}
 	
 			for (int i = 0; i < numTotalHits; i++) {
 				JSONObject resultJSON = new JSONObject();
 				Document doc = searcher.doc(hits[i].doc);
-	//			String path = doc.get("path");
-	//			if (path != null) {
-	//				System.out.println((i+1) + ". " + path);
-	//				String title = doc.get("title");
-	//				if (title != null) {
-	//					System.out.println("   Title: " + doc.get("title"));
-	//				}
-	//			} else {
-	//				System.out.println((i+1) + ". " + "No path for this document");
-	//			}
-				resultJSON.put("identification", i+1);
-				resultJSON.put("title", doc.get("title"));
-				resultJSON.put("body", doc.get("body"));
+				resultJSON.put("docId", i+1);
+				resultJSON.put("path", doc.get("path"));
+				resultJSON.put("pathnif", doc.get("pathnif"));
+				resultJSON.put("docURI", doc.get("docURI"));
+				resultJSON.put("content", doc.get("content"));
 				resultJSON.put("entities", doc.get("entities"));
+				resultJSON.put("temporals", doc.get("temporals"));
 				resultJSON.put("score", hits[i].score);
-				list.put(resultJSON);
+				joDocuments.put("document"+(i+1000),resultJSON);
 			}
-			obj.put("documents", list);
 			
+			joResults.put("documents", joDocuments);
+//			listResults.put(new JSONObject().put("documents", listDocuments));
+//			obj.put("results", listResults);
+			obj.put("results", joResults);
 			return obj.toString();
 		}
 		catch(Exception e){
 			logger.error("Error at converting LUCENE output to JSON");
+			e.printStackTrace();
 			throw new ExternalServiceFailedException("Error at converting LUCENE output to JSON");
 		}
 	}
