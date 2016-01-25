@@ -16,6 +16,7 @@ import de.dkt.common.niftools.NIFReader;
 import eu.freme.common.conversion.rdf.JenaRDFConversionService;
 import eu.freme.common.conversion.rdf.RDFConstants.RDFSerialization;
 import eu.freme.common.conversion.rdf.RDFConversionService;
+import eu.freme.common.exception.BadRequestException;
 import eu.freme.common.exception.ExternalServiceFailedException;
 
 /**
@@ -68,7 +69,18 @@ public class NIFDocumentParser implements IDocumentParser{
 		try{
 			Document doc = new Document();
 	
-			Model model = rdfconversion.unserializeRDF(content, RDFSerialization.RDF_XML);
+			Model model = null;
+			try{
+				model = rdfconversion.unserializeRDF(content, RDFSerialization.RDF_XML);
+			}
+			catch(Exception e){
+				try{
+					model = rdfconversion.unserializeRDF(content, RDFSerialization.TURTLE);
+				}
+				catch(Exception e2){
+					throw new BadRequestException("String format not allowed.");
+				}
+			}
 			
 			String fields2 [] = fields;
 			if(fields2==null || fields2.length==0){
@@ -97,6 +109,20 @@ public class NIFDocumentParser implements IDocumentParser{
 						if(strings[3].contains("DAT")){
 							text = text + ";" + strings[0];
 						}
+					}
+					store = Store.YES;
+				}
+				else if(fieldString.equalsIgnoreCase("tempMean")){
+					List<String[]> list = NIFReader.extractTempStats(model);
+					for (String[] strings : list) {
+						text = text + ";" + strings[0];
+					}
+					store = Store.YES;
+				}
+				else if(fieldString.equalsIgnoreCase("tempStDev")){
+					List<String[]> list = NIFReader.extractTempStats(model);
+					for (String[] strings : list) {
+						text = text + ";" + strings[1];
 					}
 					store = Store.YES;
 				}

@@ -1,5 +1,7 @@
 package de.dkt.eservices.elucene;
 
+import java.io.File;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +29,7 @@ public class ELuceneService {
 	 * @throws ExternalServiceFailedException
 	 * @throws BadRequestException
 	 */
-	public ResponseEntity<String> callLuceneExtraction(String queryType, String text, String languageParam, String index, String sFields, String sAnalyzers,int hitsToReturn)//, String prefix, String dataset, int numLinks, ArrayList<String> rMode, String informat)
+	public ResponseEntity<String> callLuceneExtraction(String queryType, String text, String languageParam, String index, String indexPath, String sFields, String sAnalyzers,int hitsToReturn)//, String prefix, String dataset, int numLinks, ArrayList<String> rMode, String informat)
             throws ExternalServiceFailedException, BadRequestException {
     	ParameterChecker.checkNotNullOrEmpty(languageParam, "language");
     	ParameterChecker.checkNotNullOrEmpty(sFields, "fields");
@@ -38,6 +40,12 @@ public class ELuceneService {
 //            System.out.println(text);
 //            System.out.println(URLDecoder.decode(text, "UTF-8"));
 //            String nif = "Test for the service to be working";
+        	if(indexPath!=null && !indexPath.equalsIgnoreCase("")){
+        		if(!indexPath.endsWith(File.separator)){
+        			indexPath += File.separator;
+        		}
+        		SearchFiles.setIndexDirectory(indexPath);
+        	}
         	String nif = SearchFiles.search(index, sFields, sAnalyzers, queryType, text, languageParam, hitsToReturn);
 //            String nif = "We will return the document: " + text + " in the language: " + languageParam;
             return ResponseGenerator.successResponse(nif, "RDF/XML");
@@ -48,7 +56,7 @@ public class ELuceneService {
     }
 
     /**
-     * @param path
+     * @param contentOrPath
      * @param languageParam
      * @param sFields
      * @param sAnalyzers
@@ -58,39 +66,57 @@ public class ELuceneService {
      * @throws ExternalServiceFailedException
      * @throws BadRequestException
      */
-    public ResponseEntity<String> callLuceneIndexing(String inputType, String path, String docType, String languageParam,String sFields,String sAnalyzers,String index,boolean create)
+    public ResponseEntity<String> callLuceneIndexing(String inputType, String contentOrPath, 
+    		String docType, String languageParam,String sFields,String sAnalyzers,
+    		String index,String indexPath,boolean create)
             throws ExternalServiceFailedException, BadRequestException {
     	ParameterChecker.checkNotNullOrEmpty(inputType, "inputType [should be file/string] ");
     	ParameterChecker.checkNotNullOrEmpty(languageParam, "language");
     	ParameterChecker.checkNotNullOrEmpty(sFields, "fields");
     	ParameterChecker.checkNotNullOrEmpty(sAnalyzers, "analyzers");
     	ParameterChecker.checkNotNullOrEmpty(index, "index");
-    	ParameterChecker.checkNotNullOrEmpty(path, "document path");
-    	System.out.println(inputType);
-    	System.out.println(languageParam);
-    	System.out.println(sFields);
-    	System.out.println(sAnalyzers);
-    	System.out.println(index);
-    	System.out.println(path);
-    	System.out.println(create);
-    	System.out.println();
+    	ParameterChecker.checkNotNullOrEmpty(contentOrPath, "document path");
+//    	System.out.println(inputType);
+//    	System.out.println(languageParam);
+//    	System.out.println(sFields);
+//    	System.out.println(sAnalyzers);
+//    	System.out.println(index);
+//    	System.out.println(path);
+//    	System.out.println(create);
+//    	System.out.println();
     	try {
     		if(inputType.equalsIgnoreCase("file")){
-            	if(IndexFiles.index(path, docType, index, create, sFields, sAnalyzers, languageParam)){
-            		String nif = "Document: " + path + " in language: " + languageParam + "has been correctly indexed in index: "+index;
+    			
+            	IndexFiles.setIndexCreate(create);
+            	if(indexPath!=null && !indexPath.equalsIgnoreCase("")){
+            		if(!indexPath.endsWith(File.separator)){
+            			indexPath += File.separator;
+            		}
+            		IndexFiles.setIndexDirectory(indexPath);
+            	}
+    			
+            	if(IndexFiles.index(contentOrPath, docType, index, create, sFields, sAnalyzers, languageParam)){
+            		String nif = "Document: " + contentOrPath + " in language: " + languageParam + "has been correctly indexed in index: "+index;
                     return ResponseGenerator.successResponse(nif, "RDF/XML");
             	}
             	else{
-            		throw new ExternalServiceFailedException("ERROR at indexing document "+path+" in index "+index);
+            		throw new ExternalServiceFailedException("ERROR at indexing document "+contentOrPath+" in index "+index);
             	}
     		}
     		else{
-            	if(IndexString.index(path, docType, index, create, sFields, sAnalyzers, languageParam)){
-            		String nif = "Document: " + path + " in language: " + languageParam + "has been correctly indexed in index: "+index;
-                    return ResponseGenerator.successResponse(nif, "RDF/XML");
+            	IndexString.setIndexCreate(create);
+            	if(indexPath!=null && !indexPath.equalsIgnoreCase("")){
+            		if(!indexPath.endsWith(File.separator)){
+            			indexPath += File.separator;
+            		}
+            		IndexString.setIndexDirectory(indexPath);
+            	}
+    			String nifStringOutput = IndexString.index(contentOrPath, docType, index, create, sFields, sAnalyzers, languageParam);
+            	if(nifStringOutput!=null){
+                    return ResponseGenerator.successResponse(nifStringOutput, "text/turtle");
             	}
             	else{
-            		throw new ExternalServiceFailedException("ERROR at indexing document "+path+" in index "+index);
+            		throw new ExternalServiceFailedException("ERROR at indexing document "+contentOrPath+" in index "+index);
             	}
     		}
         } catch (Exception e) {
@@ -162,7 +188,7 @@ public class ELuceneService {
  " </rdf:Description>"+
 " </rdf:RDF>";
 
-	    ResponseEntity<String> resp = service.callLuceneExtraction("NIF", input, "de","test1/", "content", "standard", 20);
+	    ResponseEntity<String> resp = service.callLuceneExtraction("NIF", input, "de","test1/", "storage/", "content", "standard", 20);
 	    System.out.println(resp.getBody());
 	}
 

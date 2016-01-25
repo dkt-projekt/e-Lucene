@@ -46,7 +46,7 @@ public class TXTDocumentParser implements IDocumentParser{
 			}
 			br.close();
 			doc.add(new TextField("title", title, Field.Store.YES));
-			doc.add(new TextField("body", body, Field.Store.YES));
+			doc.add(new TextField("content", body, Field.Store.YES));
 			doc.add(new TextField("entities", title + " " + body, Field.Store.NO));
 			doc.add(new StringField("path", path, Field.Store.YES));
 
@@ -63,7 +63,14 @@ public class TXTDocumentParser implements IDocumentParser{
 
 	@Override
 	public Document parseDocumentFromString(String content, String[] fields) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		Document doc = new Document();
+		doc.add(new TextField("title", content, Field.Store.YES));
+		doc.add(new TextField("content", content, Field.Store.YES));
+		doc.add(new TextField("entities", content, Field.Store.NO));
+		doc.add(new StringField("path", "String", Field.Store.YES));
+
+		// Note that FileReader expects the file to be in UTF-8 encoding. If that's not the case searching for special characters will fail.
+//		doc.add(new TextField("contents", new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
+		
+		return doc;	}
 }

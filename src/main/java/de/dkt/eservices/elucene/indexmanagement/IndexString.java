@@ -10,18 +10,26 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
 import de.dkt.common.filemanagement.FileFactory;
+import de.dkt.common.niftools.NIFReader;
+import de.dkt.common.niftools.NIFWriter;
 import de.dkt.eservices.elucene.indexmanagement.analyzer.AnalyzerFactory;
 import de.dkt.eservices.elucene.indexmanagement.documentparser.DocumentParserFactory;
 import de.dkt.eservices.elucene.indexmanagement.documentparser.IDocumentParser;
+import eu.freme.common.conversion.rdf.RDFConstants.RDFSerialization;
 import eu.freme.common.exception.BadRequestException;
 import eu.freme.common.exception.ExternalServiceFailedException;
 
@@ -35,16 +43,20 @@ public class IndexString {
 
 	static Logger logger = Logger.getLogger(IndexString.class);
 	
-	private static Version luceneVersion = Version.LUCENE_4_9;
+	private static Version luceneVersion = Version.LUCENE_3_0;
 	
-	private static String indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/testComplete/lucenestorage/";
+	private static String indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/";
+	private static boolean indexCreate = false;
 
 	private IndexString() {}
 
 	/** Index a text file. */
 	public static void main(String[] args) throws ExternalServiceFailedException{
 		try {
-			IndexString.index("documents/prueba.txt", "txt1", "index1", false, "all", "standard", "es");
+			IndexString.setIndexDirectory("/Users/jumo04/Documents/DFKI/DKT/dkt-test/tests/luceneindexes/");
+			IndexString.index("This is a testing document that will be used for probing "
+					+ "#the lucene indexation capabilities and module.",
+					"txt", "test1", false, "all", "standard", "en");
 		} catch (ExternalServiceFailedException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -64,7 +76,7 @@ public class IndexString {
 	 * @throws IOException
 	 * @throws ExternalServiceFailedException
 	 */
-	public static boolean index(String docContent,String docType, String index,boolean create, String sFields, String sAnalyzers, String language) throws IOException,ExternalServiceFailedException{
+	public static String index(String docContent,String docType, String index,boolean create, String sFields, String sAnalyzers, String language) throws IOException,ExternalServiceFailedException{
 		Date start = new Date();
 		logger.info("Indexing to directory '" + indexDirectory + index + "'...");
 //		System.out.println("Indexing to directory '" + indexDirectory + index + "'...");
@@ -75,7 +87,7 @@ public class IndexString {
 		}
 		else{
 			f = FileFactory.generateFileInstance(indexDirectory + index);
-		}
+		}		
 		Directory dir = FSDirectory.open(f);
 
 		IndexWriterConfig iwc = null;
@@ -87,24 +99,34 @@ public class IndexString {
 			throw new BadRequestException("The number of fields and analyzers is different");
 		}
 		
-		if(fields.length==1){
-			Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], language, luceneVersion);
-			iwc = new IndexWriterConfig(Version.LUCENE_4_9,analyzer);
+//		if(fields.length==1){
+//			Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], language, luceneVersion);
+//System.out.println("ANALYZER: "+analyzer.getClass());
+//			iwc = new IndexWriterConfig(luceneVersion,analyzer);
+//		}
+//		else{
+//			/**
+//			 * When each field has to be analyzed with a different analyzer.
+//			 */
+//			for (int i = 0; i < fields.length; i++) {
+//				Analyzer particularAnalyzer = AnalyzerFactory.getAnalyzer(analyzers[i],language,luceneVersion);
+//				analyzerMap.put(fields[i], particularAnalyzer);
+//			}
+//			PerFieldAnalyzerWrapper wrapper = new PerFieldAnalyzerWrapper(
+//					AnalyzerFactory.getAnalyzer("standard", language, luceneVersion), 
+//					analyzerMap);
+//			iwc = new IndexWriterConfig(luceneVersion,wrapper);
+//		}
+
+		for (int i = 0; i < fields.length; i++) {
+			Analyzer particularAnalyzer = AnalyzerFactory.getAnalyzer(analyzers[i],language,luceneVersion);
+			analyzerMap.put(fields[i], particularAnalyzer);
 		}
-		else{
-			/**
-			 * When each field has to be analyzed with a different analyzer.
-			 */
-			for (int i = 0; i < fields.length; i++) {
-				Analyzer particularAnalyzer = AnalyzerFactory.getAnalyzer(analyzers[i],language,luceneVersion);
-				analyzerMap.put(fields[i], particularAnalyzer);
-			}
-			PerFieldAnalyzerWrapper wrapper = new PerFieldAnalyzerWrapper(
-					AnalyzerFactory.getAnalyzer("standard", language, luceneVersion), 
-					analyzerMap);
-			iwc = new IndexWriterConfig(luceneVersion,wrapper);
-		}
-		
+		PerFieldAnalyzerWrapper wrapper = new PerFieldAnalyzerWrapper(
+				AnalyzerFactory.getAnalyzer("standard", language, luceneVersion), 
+				analyzerMap);
+		iwc = new IndexWriterConfig(luceneVersion,wrapper);
+
 		if (create) {
 			// Create a new index in the directory, removing any previously indexed documents:
 			iwc.setOpenMode(OpenMode.CREATE);
@@ -117,9 +139,14 @@ public class IndexString {
 		// iwc.setRAMBufferSizeMB(256.0);
 
 		IndexWriter writer = new IndexWriter(dir, iwc);
-
+		
+//		System.out.println("CONTENT TO INDEX" + docContent);
+		
 		IDocumentParser documentParser = DocumentParserFactory.getDocumentParser(docType);
 		Document doc = documentParser.parseDocumentFromString(docContent,fields);
+
+//		System.out.println("Document to index:" + doc);
+		
 		try  {
 			if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
 				// New index, so we just add the document (no old document can be there):
@@ -133,21 +160,46 @@ public class IndexString {
 		}
 		catch (IOException e){
 			e.printStackTrace();
+			writer.close();
 			throw e;
 		}
-		finally{
-			// NOTE: if you want to maximize search performance, you can optionally call forceMerge here.  This can be 
-			// a terribly costly operation, so generally it's only worth it when your index is relatively static 
-			// (ie you're done adding documents to it):
-			// writer.forceMerge(1);
-			writer.close();
-		}
+//		finally{
+//			// NOTE: if you want to maximize search performance, you can optionally call forceMerge here.  This can be 
+//			// a terribly costly operation, so generally it's only worth it when your index is relatively static 
+//			// (ie you're done adding documents to it):
+//			// writer.forceMerge(1);
+//			writer.close();
+//		}
+		writer.commit();
+		int numDocs = writer.numDocs();
+		System.out.println("NUM OF DOCS:" + numDocs);
+		writer.close();
 
 		Date end = new Date();
 		logger.info(end.getTime() - start.getTime() + " total milliseconds");
-//		System.out.println(end.getTime() - start.getTime() + " total milliseconds");
 
-		return true;
+		
+		
+//		dir = FSDirectory.open(f);
+//		IndexReader reader = DirectoryReader.open(dir);
+//		
+//		System.out.println(reader.numDocs());
+//		
+//		System.out.println(reader.document(0));
+//		IndexSearcher searcher = new IndexSearcher(reader);
+
+//		return "Well indexed: "+numDocs;
+		try{
+			Model model = NIFReader.extractModelFromFormatString(docContent,RDFSerialization.TURTLE);
+			String textToProcess = NIFReader.extractIsString(model);
+			NIFWriter.addLuceneIndexingInformation(model, textToProcess, "http://dkt.dfki.de/examples/", index, indexDirectory);
+			String nifOutputString = NIFReader.model2String(model, "TTL");
+			return nifOutputString;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			throw new ExternalServiceFailedException("Error at generating LUCENE output into NIF string.");
+		}
 	}
 
 	public static String getIndexDirectory() {
@@ -157,6 +209,16 @@ public class IndexString {
 	public static void setIndexDirectory(String indexDirectory) {
 		IndexString.indexDirectory = indexDirectory;
 	}
+
+
+	public static boolean isIndexCreate() {
+		return indexCreate;
+	}
+
+	public static void setIndexCreate(boolean indexCreate) {
+		IndexString.indexCreate = indexCreate;
+	}
+
 	
 	
 }

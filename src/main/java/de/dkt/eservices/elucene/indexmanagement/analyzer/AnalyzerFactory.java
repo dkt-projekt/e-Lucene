@@ -2,6 +2,7 @@ package de.dkt.eservices.elucene.indexmanagement.analyzer;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.util.Version;
@@ -35,7 +36,7 @@ public class AnalyzerFactory {
 //			}
 		}
 		if(language.equalsIgnoreCase("german") || language.equalsIgnoreCase("de") || language.equalsIgnoreCase("ger")){
-			return new SpanishAnalyzer(matchVersion);
+			return new GermanAnalyzer(matchVersion);
 		}
 		if(language.equalsIgnoreCase("english") || language.equalsIgnoreCase("en") || language.equalsIgnoreCase("eng")){
 			if(analyzer.equalsIgnoreCase("standard")){

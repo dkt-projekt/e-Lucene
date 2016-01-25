@@ -20,16 +20,14 @@ public class OwnQueryParser {
 
 	private static Version luceneVersion = Version.LUCENE_4_9;
 	
-	
-	
 	public static Query parseQuery(String queryType, String queryContent, String[] fields, String [] analyzers, String language){
 		BooleanQuery booleanQuery = new BooleanQuery();
 		
 		try{
-			if(queryType.equalsIgnoreCase("plain")){
+			if(queryType.equalsIgnoreCase("plaintext")){
 				String queryString = queryContent;
 				if(fields.length==1){
-					Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], null, luceneVersion);
+					Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], language, luceneVersion);
 					QueryParser parser1 = new QueryParser(Version.LUCENE_4_9,"content", analyzer);
 					Query query1 = parser1.parse(queryString);
 					booleanQuery.add(query1, BooleanClause.Occur.SHOULD);
@@ -39,7 +37,7 @@ public class OwnQueryParser {
 					 * When each field has to be analyzed with a different analyzer.
 					 */
 					for (int i = 0; i < fields.length; i++) {
-						Analyzer particularAnalyzer = AnalyzerFactory.getAnalyzer(analyzers[i],null/*language*/,luceneVersion);
+						Analyzer particularAnalyzer = AnalyzerFactory.getAnalyzer(analyzers[i],language,luceneVersion);
 						QueryParser parser1 = new QueryParser(Version.LUCENE_4_9,fields[i], particularAnalyzer);
 						Query query1 = parser1.parse(queryString);
 						booleanQuery.add(query1, BooleanClause.Occur.SHOULD);
@@ -50,7 +48,6 @@ public class OwnQueryParser {
 				Model nifModel = NIFReader.extractModelFromString(queryContent);
 				String textContent = NIFReader.extractIsString(nifModel);
 				List<String[]> entities = NIFReader.extractEntities(nifModel);
-
 				
 				Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], language, luceneVersion);
 				QueryParser parser1 = new QueryParser(Version.LUCENE_4_9,"content", analyzer);

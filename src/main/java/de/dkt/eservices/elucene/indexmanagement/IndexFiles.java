@@ -39,7 +39,8 @@ public class IndexFiles {
 	
 	private static Version luceneVersion = Version.LUCENE_4_9;
 	
-	private static String indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/testComplete/lucenestorage/";
+	private static String indexDirectory = "/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/";
+	private static boolean indexCreate = false;
 
 	private IndexFiles() {}
 
@@ -207,5 +208,12 @@ public class IndexFiles {
 		IndexFiles.indexDirectory = indexDirectory;
 	}
 	
+	public static boolean isIndexCreate() {
+		return indexCreate;
+	}
+
+	public static void setIndexCreate(boolean indexCreate) {
+		IndexFiles.indexCreate = indexCreate;
+	}
 	
 }
