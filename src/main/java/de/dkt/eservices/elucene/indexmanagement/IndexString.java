@@ -53,10 +53,25 @@ public class IndexString {
 	/** Index a text file. */
 	public static void main(String[] args) throws ExternalServiceFailedException{
 		try {
+			String inputText = "@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ."+
+					"@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> ."+
+					"@prefix itsrdf: <http://www.w3.org/2005/11/its/rdf#> ."+
+					"@prefix nif:   <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#> ."+
+					"@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> ."+
+					""+
+					"<http://dkt.dfki.de/examples/#char=0,813>"+
+					"        a                  nif:RFC5147String , nif:String , nif:Context ;"+
+					"        nif:beginIndex     \"0\"^^xsd:nonNegativeInteger ;"+
+					"        nif:endIndex       \"813\"^^xsd:nonNegativeInteger ;"+
+					"        nif:isString       \"\"\"1936\n\nCoup leader Sanjurjo was killed in a plane crash on 20 July, leaving an effective command split between Mola in the North and Franco in the South. On 21 July, the fifth day of the rebellion, the Nationalists captured the main Spanish naval base at Ferrol in northwestern Spain. A rebel force under Colonel Beorlegui Canet, sent by General Emilio Mola, undertook the Campaign of Guipúzcoa from July to September. The capture of Guipúzcoa isolated the Republican provinces in the north. On 5 September, after heavy fighting the force took Irún, closing the French border to the Republicans. On 13 September, the Basques surrendered San Sebastián to the Nationalists, who then advanced toward their capital, Bilbao. The Republican militias on the border of Viscaya halted these forces at the end of September.\n\"\"\"^^xsd:string ;"+
+					"        nif:meanDateRange  \"02110711030000_16631213030000\"^^xsd:string .";
+			
 			IndexString.setIndexDirectory("/Users/jumo04/Documents/DFKI/DKT/dkt-test/tests/luceneindexes/");
-			IndexString.index("This is a testing document that will be used for probing "
-					+ "#the lucene indexation capabilities and module.",
-					"txt", "test1", false, "all", "standard", "en");
+//			IndexString.index("This is a testing document that will be used for probing "
+//					+ "#the lucene indexation capabilities and module.",
+//					"nif", "test3", true, "content", "standard", "en");
+			IndexString.index(inputText,
+					"nif", "test3", true, "content", "standard", "en");
 		} catch (ExternalServiceFailedException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -119,6 +134,7 @@ public class IndexString {
 //		}
 
 		for (int i = 0; i < fields.length; i++) {
+			System.out.println("GENERATING "+analyzers[i]+" for "+fields[i]);
 			Analyzer particularAnalyzer = AnalyzerFactory.getAnalyzer(analyzers[i],language,luceneVersion);
 			analyzerMap.put(fields[i], particularAnalyzer);
 		}
@@ -190,7 +206,13 @@ public class IndexString {
 
 //		return "Well indexed: "+numDocs;
 		try{
-			Model model = NIFReader.extractModelFromFormatString(docContent,RDFSerialization.TURTLE);
+			Model model = null;
+			try{
+				model = NIFReader.extractModelFromFormatString(docContent,RDFSerialization.RDF_XML);
+			}
+			catch(Exception e){
+				model = NIFReader.extractModelFromFormatString(docContent,RDFSerialization.TURTLE);
+			}
 			String textToProcess = NIFReader.extractIsString(model);
 			NIFWriter.addLuceneIndexingInformation(model, textToProcess, "http://dkt.dfki.de/examples/", index, indexDirectory);
 			String nifOutputString = NIFReader.model2String(model, "TTL");

@@ -39,13 +39,14 @@ import de.dkt.common.tools.ParameterChecker;
 import de.dkt.eservices.elucene.indexmanagement.documentparser.DocumentParserFactory;
 import eu.freme.common.exception.BadRequestException;
 import eu.freme.common.exception.ExternalServiceFailedException;
+import eu.freme.common.rest.BaseRestController;
 
 /**
  * @author Julian Moreno Schneider julian.moreno_schneider@dfki.de
  *
  */
 @RestController
-public class ELuceneServiceStandAlone {
+public class ELuceneServiceStandAlone extends BaseRestController {
 
 	@Autowired
 	ELuceneService service;

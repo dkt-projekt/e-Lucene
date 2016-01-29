@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -57,7 +58,7 @@ public class SearchFiles {
 	/** Simple command-line based search demo. */
 	public static void main(String[] args) throws Exception {
 		SearchFiles.indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/tests/luceneindexes/";
-		String result = SearchFiles.search("test1", "content", "standard", "plaintext", "Madrid","en",10);
+		String result = SearchFiles.search("test3", "content", "standard", "plaintext", "Sanjurjo","en",10);
 		System.out.println(result);
 	}
 
@@ -72,8 +73,8 @@ public class SearchFiles {
 	 */
 	public static String search(String index,String sFields, String sAnalyzers, String queryType, String queryString, String language, int hitsToReturn) throws ExternalServiceFailedException {
 		try{
-			System.out.println(index+"__"+sFields+"__"+sAnalyzers+"__"+queryType+"__"+language+"__"+hitsToReturn);
-			System.out.println(indexDirectory);
+//			System.out.println(index+"__"+sFields+"__"+sAnalyzers+"__"+queryType+"__"+language+"__"+hitsToReturn);
+//			System.out.println(indexDirectory);
 			Date start = new Date();
 
 			File f = FileFactory.generateFileInstance(indexDirectory + index);
@@ -85,9 +86,11 @@ public class SearchFiles {
 			IndexReader reader = DirectoryReader.open(dir);
 			IndexSearcher searcher = new IndexSearcher(reader);
 			
+//			System.out.println(reader.docFreq(new Term("content", "madrid")));
+			
 			Document doc = reader.document(0);
-			System.out.println(reader.numDocs());
-			System.out.println(doc);
+//			System.out.println(reader.numDocs());
+//			System.out.println(doc);
 			
 			String[] fields = sFields.split(";");
 			String[] analyzers = sAnalyzers.split(";");
@@ -96,18 +99,17 @@ public class SearchFiles {
 				throw new BadRequestException("The number of fields and analyzers is different");
 			}
 			
-System.out.println("CHECK IF THE QUERY IS WORKING PROPERLY: "+queryString);
-			
+//System.out.println("CHECK IF THE QUERY IS WORKING PROPERLY: "+queryString);
 			Query query = OwnQueryParser.parseQuery(queryType, queryString, fields, analyzers, language);
 
-System.out.println("\t QUERY: "+query);
-
+//System.out.println("\t QUERY: "+query);
+			
 			TopDocs results = searcher.search(query, hitsToReturn);
 
 			Explanation exp = searcher.explain(query, 0);
-			System.out.println("EXPLANATION: "+exp);
+//			System.out.println("EXPLANATION: "+exp);
 
-			System.out.println("TOTAL HITS: " + results.totalHits);
+//			System.out.println("TOTAL HITS: " + results.totalHits);
 			
 			Date end = new Date();
 			logger.info("Time: "+(end.getTime()-start.getTime())+"ms");

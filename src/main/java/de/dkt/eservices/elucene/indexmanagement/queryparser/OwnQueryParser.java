@@ -71,23 +71,23 @@ public class OwnQueryParser {
 				tempString = (tempString.equals("")) ? tempString : tempString.substring(1);
 				entString = (entString.equals("")) ? entString : entString.substring(1);
 				
-				if(!entString.equals("")){
-					//Analyzer nerAnalyzer = AnalyzerFactory.getAnalyzer("NERAnalyzer",language,luceneVersion);
-//					QueryParser parserNER = new QueryParser(Version.LUCENE_4_9,"entities", nerAnalyzer);
-					QueryParser parserNER = new QueryParser(Version.LUCENE_4_9,"entities", new WhitespaceAnalyzer(Version.LUCENE_4_9));
-//					System.out.println("ENTSTRING: "+entString);
-					Query queryNER = parserNER.parse(entString);
-//					System.out.println("QUERY: "+queryNER.toString());
-					booleanQuery.add(queryNER, BooleanClause.Occur.SHOULD);
-				}
-				
-				if(!tempString.equals("")){
-//					Analyzer tempAnalyzer = AnalyzerFactory.getAnalyzer("TEMPAnalyzer",language,luceneVersion);
-//					QueryParser parserTEMP = new QueryParser(Version.LUCENE_4_9,"temporals", tempAnalyzer);
-					QueryParser parserTEMP = new QueryParser(Version.LUCENE_4_9,"temporals", new WhitespaceAnalyzer(Version.LUCENE_4_9));
-					Query queryTEMP = parserTEMP.parse(tempString);
-					booleanQuery.add(queryTEMP, BooleanClause.Occur.SHOULD);
-				}
+//				if(!entString.equals("")){
+//					//Analyzer nerAnalyzer = AnalyzerFactory.getAnalyzer("NERAnalyzer",language,luceneVersion);
+////					QueryParser parserNER = new QueryParser(Version.LUCENE_4_9,"entities", nerAnalyzer);
+//					QueryParser parserNER = new QueryParser(Version.LUCENE_4_9,"entities", new WhitespaceAnalyzer(Version.LUCENE_4_9));
+////					System.out.println("ENTSTRING: "+entString);
+//					Query queryNER = parserNER.parse(entString);
+////					System.out.println("QUERY: "+queryNER.toString());
+//					booleanQuery.add(queryNER, BooleanClause.Occur.SHOULD);
+//				}
+//				
+//				if(!tempString.equals("")){
+////					Analyzer tempAnalyzer = AnalyzerFactory.getAnalyzer("TEMPAnalyzer",language,luceneVersion);
+////					QueryParser parserTEMP = new QueryParser(Version.LUCENE_4_9,"temporals", tempAnalyzer);
+//					QueryParser parserTEMP = new QueryParser(Version.LUCENE_4_9,"temporals", new WhitespaceAnalyzer(Version.LUCENE_4_9));
+//					Query queryTEMP = parserTEMP.parse(tempString);
+//					booleanQuery.add(queryTEMP, BooleanClause.Occur.SHOULD);
+//				}
 			}
 		}
 		catch(Exception e){
