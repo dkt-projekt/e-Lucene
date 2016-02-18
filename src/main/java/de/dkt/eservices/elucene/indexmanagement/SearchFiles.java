@@ -32,6 +32,9 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.json.JSONObject;
+
+import com.hp.hpl.jena.rdf.model.Model;
 
 import de.dkt.common.filemanagement.FileFactory;
 import de.dkt.eservices.elucene.indexmanagement.queryparser.OwnQueryParser;
@@ -58,7 +61,7 @@ public class SearchFiles {
 	/** Simple command-line based search demo. */
 	public static void main(String[] args) throws Exception {
 		SearchFiles.indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/tests/luceneindexes/";
-		String result = SearchFiles.search("test3", "content", "standard", "plaintext", "Sanjurjo","en",10);
+		JSONObject result = SearchFiles.search("test3", "content", "standard", "plaintext", "Sanjurjo","en",10);
 		System.out.println(result);
 	}
 
@@ -71,7 +74,7 @@ public class SearchFiles {
 	 * @return JSON format string containing the results information and content
 	 * @throws ExternalServiceFailedException
 	 */
-	public static String search(String index,String sFields, String sAnalyzers, String queryType, String queryString, String language, int hitsToReturn) throws ExternalServiceFailedException {
+	public static JSONObject search(String index,String sFields, String sAnalyzers, String queryType, String queryString, String language, int hitsToReturn) throws ExternalServiceFailedException {
 		try{
 //			System.out.println(index+"__"+sFields+"__"+sAnalyzers+"__"+queryType+"__"+language+"__"+hitsToReturn);
 //			System.out.println(indexDirectory);
@@ -115,9 +118,9 @@ public class SearchFiles {
 			logger.info("Time: "+(end.getTime()-start.getTime())+"ms");
 //			System.out.println("Time: "+(end.getTime()-start.getTime())+"ms");
 
-			String resultString = JSONLuceneResultConverter.convertResults(query, searcher, results);
+			JSONObject resultModel = JSONLuceneResultConverter.convertResults(query, searcher, results);
 			reader.close();
-			return resultString;
+			return resultModel;
 		}
 		catch(IOException e){
 			e.printStackTrace();

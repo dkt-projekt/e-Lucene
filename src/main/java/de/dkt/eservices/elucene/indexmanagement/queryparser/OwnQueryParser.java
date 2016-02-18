@@ -89,6 +89,46 @@ public class OwnQueryParser {
 //					booleanQuery.add(queryTEMP, BooleanClause.Occur.SHOULD);
 //				}
 			}
+			else if(queryType.equalsIgnoreCase("docid")){
+				String queryString = queryContent;
+				if(fields.length==1){
+					Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], language, luceneVersion);
+					QueryParser parser1 = new QueryParser(Version.LUCENE_4_9,fields[0], analyzer);
+					Query query1 = parser1.parse(queryString);
+					booleanQuery.add(query1, BooleanClause.Occur.SHOULD);
+				}
+				else{
+					/**
+					 * When each field has to be analyzed with a different analyzer.
+					 */
+					for (int i = 0; i < fields.length; i++) {
+						Analyzer particularAnalyzer = AnalyzerFactory.getAnalyzer(analyzers[i],language,luceneVersion);
+						QueryParser parser1 = new QueryParser(Version.LUCENE_4_9,fields[i], particularAnalyzer);
+						Query query1 = parser1.parse(queryString);
+						booleanQuery.add(query1, BooleanClause.Occur.SHOULD);
+					}
+				}
+			}
+			else if(queryType.equalsIgnoreCase("tfidf")){
+				String queryString = queryContent;
+				if(fields.length==1){
+					Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], language, luceneVersion);
+					QueryParser parser1 = new QueryParser(Version.LUCENE_4_9,fields[0], analyzer);
+					Query query1 = parser1.parse(queryString);
+					booleanQuery.add(query1, BooleanClause.Occur.SHOULD);
+				}
+				else{
+					/**
+					 * When each field has to be analyzed with a different analyzer.
+					 */
+					for (int i = 0; i < fields.length; i++) {
+						Analyzer particularAnalyzer = AnalyzerFactory.getAnalyzer(analyzers[i],language,luceneVersion);
+						QueryParser parser1 = new QueryParser(Version.LUCENE_4_9,fields[i], particularAnalyzer);
+						Query query1 = parser1.parse(queryString);
+						booleanQuery.add(query1, BooleanClause.Occur.SHOULD);
+					}
+				}
+			}
 		}
 		catch(Exception e){
 			e.printStackTrace();

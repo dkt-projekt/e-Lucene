@@ -35,6 +35,12 @@ public class NIFDocumentParser implements IDocumentParser{
 	public NIFDocumentParser() {
 		rdfconversion  = new JenaRDFConversionService();
 	}
+
+	@Override
+	public Model parseModelFromFile(String content, String[] fields) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	@Override
 	public Document parseDocumentFromFile(String path, String[] fields) {

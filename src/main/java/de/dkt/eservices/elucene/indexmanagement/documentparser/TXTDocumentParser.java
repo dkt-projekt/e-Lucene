@@ -12,6 +12,8 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.springframework.core.io.ClassPathResource;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
 /**
  * @author Julian Moreno Schneider julian.moreno_schneider@dfki.de
  *
@@ -24,6 +26,12 @@ import org.springframework.core.io.ClassPathResource;
 public class TXTDocumentParser implements IDocumentParser{
 
 	public TXTDocumentParser() {
+	}
+
+	@Override
+	public Model parseModelFromFile(String content, String[] fields) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	@Override

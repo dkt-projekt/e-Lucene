@@ -1,5 +1,8 @@
 package de.dkt.eservices.elucene.indexmanagement.resultconverter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.IndexSearcher;
@@ -9,13 +12,16 @@ import org.apache.lucene.search.TopDocs;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+
 import eu.freme.common.exception.ExternalServiceFailedException;
 
 public class JSONLuceneResultConverter {
 	
 	static Logger logger = Logger.getLogger(JSONLuceneResultConverter.class);
 	
-	public static String convertResults(Query query,IndexSearcher searcher,TopDocs results) throws ExternalServiceFailedException{
+	public static JSONObject convertResults(Query query,IndexSearcher searcher,TopDocs results) throws ExternalServiceFailedException{
 		try{
 			ScoreDoc[] hits = results.scoreDocs;
 			int numTotalHits = results.totalHits;
@@ -62,7 +68,7 @@ public class JSONLuceneResultConverter {
 //			listResults.put(new JSONObject().put("documents", listDocuments));
 //			obj.put("results", listResults);
 			obj.put("results", joResults);
-			return obj.toString();
+			return obj;
 		}
 		catch(Exception e){
 			logger.error("Error at converting LUCENE output to JSON");
@@ -70,4 +76,5 @@ public class JSONLuceneResultConverter {
 			throw new ExternalServiceFailedException("Error at converting LUCENE output to JSON");
 		}
 	}
+
 }

@@ -33,8 +33,11 @@ public class DocumentParserFactory {
 //			return PDFDocumentParser.parseDocument(path);
 //		}
 //		if(type.equalsIgnoreCase("doc")){
-//			return DOCDocumentParser.parseDocument(path);
-//		}
+//		return DOCDocumentParser.parseDocument(path);
+//	}
+	if(type.equalsIgnoreCase("DktDocument")){
+		return new DktDocumentParser();
+	}
 		System.out.println("ERROR: Unsupported document type");
 		return null;
 	}

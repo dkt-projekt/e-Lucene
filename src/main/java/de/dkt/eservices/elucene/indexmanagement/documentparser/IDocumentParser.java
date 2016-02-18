@@ -1,13 +1,8 @@
 package de.dkt.eservices.elucene.indexmanagement.documentparser;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.TextField;
-import org.springframework.core.io.ClassPathResource;
+
+import com.hp.hpl.jena.rdf.model.Model;
 
 /**
  * @author Julian Moreno Schneider julian.moreno_schneider@dfki.de
@@ -22,5 +17,7 @@ public interface IDocumentParser {
 	public Document parseDocumentFromFile (String path, String[] fields);
 
 	public Document parseDocumentFromString (String content, String[] fields);
+
+	public Model parseModelFromFile (String content, String[] fields);
 
 }

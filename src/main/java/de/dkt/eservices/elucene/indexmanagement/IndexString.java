@@ -43,7 +43,7 @@ public class IndexString {
 
 	static Logger logger = Logger.getLogger(IndexString.class);
 	
-	private static Version luceneVersion = Version.LUCENE_3_0;
+	private static Version luceneVersion = Version.LUCENE_4_9;
 	
 	private static String indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/";
 	private static boolean indexCreate = false;
@@ -91,7 +91,7 @@ public class IndexString {
 	 * @throws IOException
 	 * @throws ExternalServiceFailedException
 	 */
-	public static String index(String docContent,String docType, String index,boolean create, String sFields, String sAnalyzers, String language) throws IOException,ExternalServiceFailedException{
+	public static Model index(String docContent,String docType, String index,boolean create, String sFields, String sAnalyzers, String language) throws IOException,ExternalServiceFailedException{
 		Date start = new Date();
 		logger.info("Indexing to directory '" + indexDirectory + index + "'...");
 //		System.out.println("Indexing to directory '" + indexDirectory + index + "'...");
@@ -160,19 +160,22 @@ public class IndexString {
 		
 		IDocumentParser documentParser = DocumentParserFactory.getDocumentParser(docType);
 		Document doc = documentParser.parseDocumentFromString(docContent,fields);
-
+		
 //		System.out.println("Document to index:" + doc);
 		
+//		try  {
+//			if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
+//				// New index, so we just add the document (no old document can be there):
+////				System.out.println("adding " + file);
+//				writer.addDocument(doc);
+//			} else {
+//				// Existing index (an old copy of this document may have been indexed) so we use updateDocument instead to replace the old one matching the exact path, if present:
+////				System.out.println("updating " + file);
+//				writer.updateDocument(new Term("path", doc.get("path")), doc);
+//			}
+//		}
 		try  {
-			if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
-				// New index, so we just add the document (no old document can be there):
-//				System.out.println("adding " + file);
-				writer.addDocument(doc);
-			} else {
-				// Existing index (an old copy of this document may have been indexed) so we use updateDocument instead to replace the old one matching the exact path, if present:
-//				System.out.println("updating " + file);
-				writer.updateDocument(new Term("path", doc.get("path")), doc);
-			}
+			writer.addDocument(doc);
 		}
 		catch (IOException e){
 			e.printStackTrace();
@@ -187,15 +190,13 @@ public class IndexString {
 //			writer.close();
 //		}
 		writer.commit();
-		int numDocs = writer.numDocs();
-		System.out.println("NUM OF DOCS:" + numDocs);
+//		int numDocs = writer.numDocs();
+//		System.out.println("NUM OF DOCS:" + numDocs);
 		writer.close();
 
 		Date end = new Date();
 		logger.info(end.getTime() - start.getTime() + " total milliseconds");
 
-		
-		
 //		dir = FSDirectory.open(f);
 //		IndexReader reader = DirectoryReader.open(dir);
 //		
@@ -206,17 +207,21 @@ public class IndexString {
 
 //		return "Well indexed: "+numDocs;
 		try{
-			Model model = null;
-			try{
-				model = NIFReader.extractModelFromFormatString(docContent,RDFSerialization.RDF_XML);
+			if(docType.equalsIgnoreCase("DktDocument")){
+				return null;
 			}
-			catch(Exception e){
-				model = NIFReader.extractModelFromFormatString(docContent,RDFSerialization.TURTLE);
+			else{
+				Model model = null;
+				try{
+					model = NIFReader.extractModelFromFormatString(docContent,RDFSerialization.RDF_XML);
+				}
+				catch(Exception e){
+					model = NIFReader.extractModelFromFormatString(docContent,RDFSerialization.TURTLE);
+				}
+				String textToProcess = NIFReader.extractIsString(model);
+				NIFWriter.addLuceneIndexingInformation(model, textToProcess, NIFReader.extractDocumentURI(model), index, indexDirectory);
+				return model;
 			}
-			String textToProcess = NIFReader.extractIsString(model);
-			NIFWriter.addLuceneIndexingInformation(model, textToProcess, "http://dkt.dfki.de/examples/", index, indexDirectory);
-			String nifOutputString = NIFReader.model2String(model, "TTL");
-			return nifOutputString;
 		}
 		catch(Exception e){
 			e.printStackTrace();

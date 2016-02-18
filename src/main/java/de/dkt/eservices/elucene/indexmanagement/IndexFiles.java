@@ -20,6 +20,8 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
 import de.dkt.common.filemanagement.FileFactory;
 import de.dkt.eservices.elucene.indexmanagement.analyzer.AnalyzerFactory;
 import de.dkt.eservices.elucene.indexmanagement.documentparser.DocumentParserFactory;
@@ -67,11 +69,10 @@ public class IndexFiles {
 	 * @throws IOException
 	 * @throws ExternalServiceFailedException
 	 */
-	public static boolean index(String docsPath,String docType, String index,boolean create, String sFields, String sAnalyzers, String language) throws IOException,ExternalServiceFailedException{
+	public static Model index(String docsPath,String docType, String index,boolean create, String sFields, String sAnalyzers, String language) throws IOException,ExternalServiceFailedException{
 		Date start = new Date();
 		logger.info("Indexing to directory '" + indexDirectory + index + "'...");
 //		System.out.println("Indexing to directory '" + indexDirectory + index + "'...");
-
 		File f;
 		if(create){
 			f = FileFactory.generateOrCreateDirectoryInstance(indexDirectory + index);
@@ -80,21 +81,7 @@ public class IndexFiles {
 			f = FileFactory.generateFileInstance(indexDirectory + index);
 		}
 		
-//		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext();
-//		ClassPathResource indexResource = new ClassPathResource(indexDirectory + index);
-//		if(!indexResource.exists()){
-//			logger.info("Index folder does not exist, it will be created.");
-////			System.out.println("Index folder does not exist, it will be created.");
-//			PathMatchingResourcePatternResolver pmr = new PathMatchingResourcePatternResolver();
-//			Resource indexDirectoryResource = pmr.getResource(""+indexDirectory);
-//			File f = indexDirectoryResource.getFile();
-//			File f2 = new File(f, index+"/");
-//			f2.mkdir();
-//		}
-//		File f = indexResource.getFile();
-//		ctx.close();
 		Directory dir = FSDirectory.open(f);
-
 		IndexWriterConfig iwc = null;
 		Map<String, Analyzer> analyzerMap = new HashMap<String, Analyzer>();
 		String[] fields = sFields.split(";");
@@ -134,7 +121,7 @@ public class IndexFiles {
 		// iwc.setRAMBufferSizeMB(256.0);
 
 		IndexWriter writer = new IndexWriter(dir, iwc);
-		indexDocs(writer, docsPath, docType, fields);
+		Model outputModel = indexDocs(writer, docsPath, docType, fields);
 
 		// NOTE: if you want to maximize search performance, you can optionally call forceMerge here.  This can be 
 		// a terribly costly operation, so generally it's only worth it when your index is relatively static 
@@ -146,7 +133,7 @@ public class IndexFiles {
 		logger.info(end.getTime() - start.getTime() + " total milliseconds");
 //		System.out.println(end.getTime() - start.getTime() + " total milliseconds");
 
-		return true;
+		return outputModel;
 	}
 
 	/**
@@ -157,8 +144,9 @@ public class IndexFiles {
 	 * @param docsPath The file to index, or the directory to recurse into to find files to index
 	 * @throws IOException If there is a low-level I/O error
 	 */
-	static void indexDocs(final IndexWriter writer, String docsPath, final String doctype, String fields[]) throws IOException,ExternalServiceFailedException {
+	static Model indexDocs(final IndexWriter writer, String docsPath, final String doctype, String fields[]) throws IOException,ExternalServiceFailedException {
 		File f = FileFactory.generateFileInstance(docsPath);
+		Model outputModel = null;
 //		ClassPathResource resource = new ClassPathResource(docsPath);
 //		System.out.println("SALIDA: "+resource.getPath() + "--" + resource.exists());
 		final Path path = Paths.get(f.toURI());
@@ -171,8 +159,10 @@ public class IndexFiles {
 //			System.out.println(path.toUri().toString());
 			IDocumentParser documentParser = DocumentParserFactory.getDocumentParser(doctype);
 			Document doc = documentParser.parseDocumentFromFile(docsPath,fields);
+			outputModel = documentParser.parseModelFromFile(docsPath,fields);
 			indexDoc(writer, doc, path);
 		}
+		return outputModel;
 	}
 
 	/** 
