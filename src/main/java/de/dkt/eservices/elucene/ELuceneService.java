@@ -2,15 +2,13 @@ package de.dkt.eservices.elucene;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
 import de.dkt.common.tools.ParameterChecker;
-import de.dkt.common.tools.ResponseGenerator;
-import de.dkt.eservices.elucene.indexmanagement.IndexFiles;
 import de.dkt.eservices.elucene.indexmanagement.IndexString;
 import de.dkt.eservices.elucene.indexmanagement.IndexesRepository;
 import de.dkt.eservices.elucene.indexmanagement.SearchFiles;
@@ -24,6 +22,8 @@ import eu.freme.common.exception.ExternalServiceFailedException;
 @Component
 public class ELuceneService {
     
+	Logger logger = Logger.getLogger(ELuceneService.class);
+
 	/**
 	 * @param text
 	 * @param languageParam
@@ -34,15 +34,12 @@ public class ELuceneService {
 	 */
 	public JSONObject callLuceneExtraction(String queryType, String text, String languageParam, String index, String indexPath, String sFields, String sAnalyzers,int hitsToReturn)//, String prefix, String dataset, int numLinks, ArrayList<String> rMode, String informat)
             throws ExternalServiceFailedException, BadRequestException {
-    	ParameterChecker.checkNotNullOrEmpty(languageParam, "language");
-    	ParameterChecker.checkNotNullOrEmpty(sFields, "fields");
-    	ParameterChecker.checkNotNullOrEmpty(sAnalyzers, "analyzers");
-    	ParameterChecker.checkNotNullOrEmpty(index, "index");
-    	ParameterChecker.checkNotNullOrEmpty(text, "document path");
+    	ParameterChecker.checkNotNullOrEmpty(languageParam, "language", logger);
+    	ParameterChecker.checkNotNullOrEmpty(sFields, "fields", logger);
+    	ParameterChecker.checkNotNullOrEmpty(sAnalyzers, "analyzers", logger);
+    	ParameterChecker.checkNotNullOrEmpty(index, "index", logger);
+    	ParameterChecker.checkNotNullOrEmpty(text, "document path", logger);
         try {
-//            System.out.println(text);
-//            System.out.println(URLDecoder.decode(text, "UTF-8"));
-//            String nif = "Test for the service to be working";
         	if(indexPath!=null && !indexPath.equalsIgnoreCase("")){
         		if(!indexPath.endsWith(File.separator)){
         			indexPath += File.separator;
@@ -52,8 +49,9 @@ public class ELuceneService {
         	JSONObject nifOutputModel = SearchFiles.search(index, sFields, sAnalyzers, queryType, text, languageParam, hitsToReturn);
             return nifOutputModel;
         } catch (Exception e) {
-        	e.printStackTrace();
-            throw new ExternalServiceFailedException(e.getMessage());
+//        	e.printStackTrace();
+        	logger.error(e.getMessage());
+        	throw new ExternalServiceFailedException(e.getMessage());
         }
     }
 
@@ -73,11 +71,11 @@ public class ELuceneService {
     		String index,String indexPath,boolean create)
             throws ExternalServiceFailedException, BadRequestException {
  //   	ParameterChecker.checkNotNullOrEmpty(inputType, "inputType [should be file/string] ");
-    	ParameterChecker.checkNotNullOrEmpty(languageParam, "language");
-    	ParameterChecker.checkNotNullOrEmpty(sFields, "fields");
-    	ParameterChecker.checkNotNullOrEmpty(sAnalyzers, "analyzers");
-    	ParameterChecker.checkNotNullOrEmpty(index, "index");
-    	ParameterChecker.checkNotNullOrEmpty(contentOrPath, "document path");
+    	ParameterChecker.checkNotNullOrEmpty(languageParam, "language", logger);
+    	ParameterChecker.checkNotNullOrEmpty(sFields, "fields", logger);
+    	ParameterChecker.checkNotNullOrEmpty(sAnalyzers, "analyzers", logger);
+    	ParameterChecker.checkNotNullOrEmpty(index, "index", logger);
+    	ParameterChecker.checkNotNullOrEmpty(contentOrPath, "document path", logger);
     	try {
 //    		if(inputType.equalsIgnoreCase("file")){
 //            	IndexFiles.setIndexCreate(create);
@@ -103,11 +101,13 @@ public class ELuceneService {
                     return nifModelOutput;
             	}
             	else{
+            		logger.error("ERROR at indexing document "+contentOrPath+" in index "+index);
             		throw new ExternalServiceFailedException("ERROR at indexing document "+contentOrPath+" in index "+index);
             	}
 //    		}
         } catch (Exception e) {
-        	e.printStackTrace();
+//        	e.printStackTrace();
+            logger.error(e.getMessage());
             throw new ExternalServiceFailedException(e.getMessage());
         }
     }
@@ -119,6 +119,7 @@ public class ELuceneService {
 //
 	public String getRepositoryInformation(String repositoryName) throws ExternalServiceFailedException {
 		if(repositoryName==null || repositoryName.equals("")){
+			logger.error("No repository name given.");
 			throw new BadRequestException("No repository name given.");
 		}
 		try{
@@ -126,22 +127,26 @@ public class ELuceneService {
 			return ir.getListOfIndexes();
 		}
 		catch(Exception e){
+			logger.error("ERROR retrieveing information form repository "+repositoryName);
 			throw new ExternalServiceFailedException("ERROR retrieveing information form repository "+repositoryName);
 		}
 	}
 
 	public String getIndexInformation(String repositoryName, String indexName) throws ExternalServiceFailedException,BadRequestException {
 		if(repositoryName==null || repositoryName.equals("")){
+			logger.error("No repository name given.");
 			throw new BadRequestException("No repository name given.");
 		}
 		if(indexName==null || indexName.equals("")){
-			throw new BadRequestException("No repository name given.");
+			logger.error("No index name given.");
+			throw new BadRequestException("No index name given.");
 		}
 		try{
 			IndexesRepository ir = new IndexesRepository(repositoryName);
 			return ir.getIndexInformation(indexName);
 		}
 		catch(Exception e){
+			logger.error("ERROR retrieveing information form repository "+repositoryName);
 			throw new ExternalServiceFailedException("ERROR retrieveing information form repository "+repositoryName);
 		}
 	}
