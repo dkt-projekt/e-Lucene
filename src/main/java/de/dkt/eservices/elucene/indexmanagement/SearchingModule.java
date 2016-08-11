@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -16,6 +17,8 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.json.JSONObject;
+
+import com.hp.hpl.jena.rdf.model.Model;
 
 import de.dkt.common.filemanagement.FileFactory;
 import de.dkt.eservices.elucene.indexmanagement.queryparser.OwnQueryParser;
@@ -29,15 +32,15 @@ import eu.freme.common.exception.ExternalServiceFailedException;
  * @author Julian Moreno Schneider - julian.moreno_schneider@dfki.de
  *
  */
-public class SearchFiles {
+public class SearchingModule {
 
-	static Logger logger = Logger.getLogger(SearchFiles.class);
+	static Logger logger = Logger.getLogger(SearchingModule.class);
 
 	private static Version luceneVersion = Version.LUCENE_3_0;
 	
 	private static String indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/";
 	
-	private SearchFiles() {}
+	private SearchingModule() {}
 
 //	/** Simple command-line based search demo. */
 //	public static void main(String[] args) throws Exception {
@@ -114,7 +117,7 @@ public class SearchFiles {
 	}
 
 	public static void setIndexDirectory(String indexDirectory) {
-		SearchFiles.indexDirectory = indexDirectory;
+		SearchingModule.indexDirectory = indexDirectory;
 	}
 	
 	

@@ -16,13 +16,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
-import de.dkt.common.authentication.UserAuthentication;
+import de.dkt.common.exceptions.LoggedExceptions;
+import de.dkt.common.feedback.InteractionManagement;
 import de.dkt.common.tools.ParameterChecker;
+import eu.freme.common.conversion.rdf.RDFConstants;
+import eu.freme.common.conversion.rdf.RDFConversionService;
 import eu.freme.common.exception.BadRequestException;
 import eu.freme.common.exception.ExternalServiceFailedException;
 import eu.freme.common.rest.BaseRestController;
@@ -40,6 +41,9 @@ public class ELuceneServiceStandAlone extends BaseRestController {
 	@Autowired
 	ELuceneService service;
 	
+	@Autowired
+	RDFConversionService rdfConversionService;
+
 	@RequestMapping(value = "/e-lucene/testURL", method = { RequestMethod.POST, RequestMethod.GET })
 	public ResponseEntity<String> testURL(
 			@RequestParam(value = "preffix", required = false) String preffix,
@@ -53,9 +57,7 @@ public class ELuceneServiceStandAlone extends BaseRestController {
 	
 	@RequestMapping(value = "/e-lucene/indexDocument", method = { RequestMethod.POST })
 	public ResponseEntity<String> indexDocument(
-//	public String execute(
 			HttpServletRequest request, 
-//			HttpServletResponse response,
 			@RequestParam(value = "input", required = false) String input,
 			@RequestParam(value = "i", required = false) String i,
 			@RequestParam(value = "informat", required = false) String informat,
@@ -80,103 +82,31 @@ public class ELuceneServiceStandAlone extends BaseRestController {
 			@RequestParam(value = "fields", required = false) String sFields,
 			@RequestParam(value = "analyzers", required = false) String sAnalyzers,
 			@RequestParam(value = "private", required = false) boolean priv,
-			@RequestParam(value = "users", required = false) String sUsers,
-			@RequestParam(value = "passwords", required = false) String sPasswords,
             @RequestBody(required = false) String postBody) throws Exception {
 
-		String users[] = sUsers.split(";");
-		String passwords[] = sPasswords.split(";");
-		if(!create){
-			//TODO Check users
-			if(users.length!=1 || passwords.length!=1){
-				logger.error("User and Password must have the same length (1 in case of not creating the index) [WARNING NOTE: neither user nor password can contain ';']");
-				throw new IllegalAccessException("User and Password must have the same length (1 in case of not creating the index) [WARNING NOTE: neither user nor password can contain ';']");
-			}
-			if(!UserAuthentication.authenticateUser(users[0], passwords[0], "file", "lucene", index, false)){
-				logger.error("User ["+users[0]+"] is not allow to use the index ["+index+"] ");
-				throw new IllegalAccessException("User ["+users[0]+"] is not allow to use the index ["+index+"] ");
-			}
-		}
-		
 		ParameterChecker.checkNotNullOrEmpty(index, "indexName", logger);
 		ParameterChecker.checkNotNullOrEmpty(inputType, "inputType", logger);
 		ParameterChecker.checkInList(language, "en;de;es", "Unsupported language.", logger);
 		
-		String contentOrPath = "";
-		if(inputType.equalsIgnoreCase("file")){
-	        MultipartFile file1 = null;//= multipartRequest.getFile("file");
-    		byte[] bytes;
-			if (request instanceof MultipartHttpServletRequest){
-		           MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-		           file1 = multipartRequest.getFile("file");
-		   		if(file1==null){
-					logger.error("No file received in request");
-					throw new BadRequestException("No file received in request");
-				}
-		        if (!file1.isEmpty()) {
-		        	try {
-		        		bytes = file1.getBytes();
-		        	} catch (Exception e) {
-		        		logger.error("Fail at reading input file.");
-		        		throw new BadRequestException("Fail at reading input file.");
-		        	}
-		        } else {
-		        	logger.error("The given file was empty.");
-		        	throw new BadRequestException("The given file was empty.");
-		        }
-	        	contentOrPath = new String(bytes, "UTF-8");
-	        	inputType = "string";
-	        }
-			else{
-				ParameterChecker.checkNotNullOrEmpty(postBody, "body content",logger);
-	        	contentOrPath = postBody;
-	        	inputType = "string";
-			}
-		
-//			String tmpFolder = "storage/tmp/";
-//	   		//TODO store file in tmp folder.
-//	   		Date dNow = new Date();
-//	   		String tmpFileName = "tmpFile"+dNow.toString();
-//	   		File tmpFile = FileFactory.generateOrCreateFileInstance(tmpFolder + tmpFileName);
-//        	try {
-//        		BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(tmpFile));
-//        		stream.write(bytes);
-//        		stream.close();
-//        	} catch (Exception e) {
-//        		throw new BadRequestException("Fail at uploading the file.");
-//        	}
-//        	contentOrPath = tmpFile.getAbsolutePath();
-//        	System.out.println(contentOrPath);
-//        	contentOrPath = tmpFolder+tmpFileName;
-		}
-		else{
-			contentOrPath = postBody;
-		}
-
-		NIFParameterSet nifParameters = this.normalizeNif(contentOrPath, informat, outformat, postBody, acceptHeader, contentTypeHeader, prefix);
-
+        NIFParameterSet nifParameters = this.normalizeNif(input, informat, outformat, postBody, acceptHeader, contentTypeHeader, prefix);
+        Model inModel = null;
+        if (nifParameters.getInformat().equals(RDFConstants.RDFSerialization.PLAINTEXT)) {
+			rdfConversionService.plaintextToRDF(inModel, nifParameters.getInput(),language, nifParameters.getPrefix());
+        } else {
+            inModel = rdfConversionService.unserializeRDF(nifParameters.getInput(), nifParameters.getInformat());
+        }
+        if(inModel==null){
+        	String msg = "";
+			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "error", "e-Lucene/indexDocument", msg, "", "Exception", msg, "");
+			throw LoggedExceptions.generateLoggedBadRequestException(logger, msg);
+        }
         try {
-        	Model luceneModel = service.callLuceneIndexing(
-            		inputType,contentOrPath, fileType, 
-            		language, sFields, sAnalyzers, 
-            		index, indexPath, create);
+        	Model luceneModel = service.indexDocument(inModel, language, sFields, sAnalyzers, index, indexPath, create);
         	
-        	if(create){
-        		if(users.length!=passwords.length){
-        			logger.error("Users and Passwords must have the same length [WARNING NOTE: neither user nor password can contain ';']");
-        			throw new BadRequestException("Users and Passwords must have the same length [WARNING NOTE: neither user nor password can contain ';']");
-        		}
-        		for (int j = 0; j < users.length; j++) {
-            		if(!UserAuthentication.addCredentials(users[j],passwords[j], "admin", "file", "lucene",index,true)){
-            			logger.error("There is a problem adding credentials for user ["+users[j]+"] in index ["+index+"]");
-            			throw new ExternalServiceFailedException("There is a problem adding credentials for user ["+users[j]+"] in index ["+index+"]");
-            		}
-				}
-        	}
     		return createSuccessResponse(luceneModel, nifParameters.getOutformat());            
         } catch (Exception e) {
-        	logger.error("EXCEPTION OCCURED WITH MESSAGE: "+e.toString());
-            throw e;
+			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "error", "e-Lucene/indexDocument", e.getMessage(), "", "Exception", e.getMessage(), "");
+			throw LoggedExceptions.generateLoggedBadRequestException(logger, e.getMessage());
         }
 	}
 
@@ -202,8 +132,6 @@ public class ELuceneServiceStandAlone extends BaseRestController {
 			@RequestParam(value = "language", required = false) String language,
 			@RequestParam(value = "fields", required = false) String sFields,
 			@RequestParam(value = "analyzers", required = false) String sAnalyzers,
-			@RequestParam(value = "user", required = false) String sUser,
-			@RequestParam(value = "password", required = false) String sPassword,
 			@RequestParam(value = "hits", required = false) int hits,
             @RequestBody(required = false) String postBody) throws Exception {
 
@@ -211,11 +139,6 @@ public class ELuceneServiceStandAlone extends BaseRestController {
 		ParameterChecker.checkNotNullOrEmpty(inputType, "inputType", logger);
 		ParameterChecker.checkNotNullOrEmpty(language, "language", logger);
 		ParameterChecker.checkInList(language, "en;de;es", "Unsupported language.", logger);
-
-		if(!UserAuthentication.authenticateUser(sUser, sPassword, "file", "lucene", indexName, false)){
-			logger.error("User ["+sUser+"] is not allow to use the index ["+indexName+"] ");
-			throw new IllegalAccessException("User ["+sUser+"] is not allow to use the index ["+indexName+"] ");
-		}
 
 		String inputText = "";
 		

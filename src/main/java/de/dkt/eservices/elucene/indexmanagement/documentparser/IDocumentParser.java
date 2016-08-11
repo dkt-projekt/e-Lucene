@@ -18,6 +18,6 @@ public interface IDocumentParser {
 
 	public Document parseDocumentFromString (String content, String[] fields);
 
-	public Model parseModelFromFile (String content, String[] fields);
+	public Document parseDocumentFromModel (Model content, String[] fields);
 
 }

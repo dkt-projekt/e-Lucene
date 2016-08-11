@@ -3,14 +3,11 @@ package de.dkt.eservices.elucene.indexmanagement.documentparser;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
-import org.springframework.core.io.ClassPathResource;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -28,12 +25,6 @@ public class TXTDocumentParser implements IDocumentParser{
 	public TXTDocumentParser() {
 	}
 
-	@Override
-	public Model parseModelFromFile(String content, String[] fields) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	@Override
 	public Document parseDocumentFromFile(String path, String[] fields) {
 		try{
@@ -81,4 +72,10 @@ public class TXTDocumentParser implements IDocumentParser{
 //		doc.add(new TextField("contents", new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
 		
 		return doc;	}
+
+	@Override
+	public Document parseDocumentFromModel(Model content, String[] fields) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

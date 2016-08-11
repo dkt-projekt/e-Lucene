@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 import com.hp.hpl.jena.rdf.model.Model;
 
 import de.dkt.common.tools.ParameterChecker;
-import de.dkt.eservices.elucene.indexmanagement.IndexString;
 import de.dkt.eservices.elucene.indexmanagement.IndexesRepository;
+import de.dkt.eservices.elucene.indexmanagement.IndexingModule;
 import de.dkt.eservices.elucene.indexmanagement.SearchFiles;
 import eu.freme.common.exception.BadRequestException;
 import eu.freme.common.exception.ExternalServiceFailedException;
@@ -66,47 +66,36 @@ public class ELuceneService {
      * @throws ExternalServiceFailedException
      * @throws BadRequestException
      */
-    public Model callLuceneIndexing(String inputType, String contentOrPath, 
-    		String docType, String languageParam,String sFields,String sAnalyzers,
+    public Model indexDocument(Model inModel, String languageParam,String sFields,String sAnalyzers,
     		String index,String indexPath,boolean create)
             throws ExternalServiceFailedException, BadRequestException {
- //   	ParameterChecker.checkNotNullOrEmpty(inputType, "inputType [should be file/string] ");
     	ParameterChecker.checkNotNullOrEmpty(languageParam, "language", logger);
     	ParameterChecker.checkNotNullOrEmpty(sFields, "fields", logger);
     	ParameterChecker.checkNotNullOrEmpty(sAnalyzers, "analyzers", logger);
     	ParameterChecker.checkNotNullOrEmpty(index, "index", logger);
-    	ParameterChecker.checkNotNullOrEmpty(contentOrPath, "document path", logger);
+    	if(inModel==null){
+    		String msg = "Input model is NULL";
+    		logger.error(msg);
+    		throw new BadRequestException(msg);
+    	}
     	try {
-//    		if(inputType.equalsIgnoreCase("file")){
-//            	IndexFiles.setIndexCreate(create);
-//            	if(indexPath!=null && !indexPath.equalsIgnoreCase("")){
-//            		if(!indexPath.endsWith(File.separator)){
-//            			indexPath += File.separator;
-//            		}
-//            		IndexFiles.setIndexDirectory(indexPath);
-//            	}
-//            	Model nifOutputModel = IndexFiles.index(contentOrPath, docType, index, create, sFields, sAnalyzers, languageParam);
-//                return nifOutputModel;
-//    		}
-//    		else{
-            	IndexString.setIndexCreate(create);
-            	if(indexPath!=null && !indexPath.equalsIgnoreCase("")){
-            		if(!indexPath.endsWith(File.separator)){
-            			indexPath += File.separator;
-            		}
-            		IndexString.setIndexDirectory(indexPath);
-            	}
-    			Model nifModelOutput = IndexString.index(contentOrPath, docType, index, create, sFields, sAnalyzers, languageParam);
-            	if(nifModelOutput!=null){
-                    return nifModelOutput;
-            	}
-            	else{
-            		logger.error("ERROR at indexing document "+contentOrPath+" in index "+index);
-            		throw new ExternalServiceFailedException("ERROR at indexing document "+contentOrPath+" in index "+index);
-            	}
-//    		}
+        	IndexingModule.setIndexCreate(create);
+        	if(indexPath!=null && !indexPath.equalsIgnoreCase("")){
+        		if(!indexPath.endsWith(File.separator)){
+        			indexPath += File.separator;
+        		}
+        		IndexingModule.setIndexDirectory(indexPath);
+        	}
+			Model nifModelOutput = IndexingModule.indexModel(inModel, indexPath, sFields, sAnalyzers, languageParam);
+        	if(nifModelOutput!=null){
+                return nifModelOutput;
+        	}
+        	else{
+        		String msg = "ERROR at indexing document in index "+index;
+        		logger.error(msg);
+        		throw new ExternalServiceFailedException(msg);
+        	}
         } catch (Exception e) {
-//        	e.printStackTrace();
             logger.error(e.getMessage());
             throw new ExternalServiceFailedException(e.getMessage());
         }
