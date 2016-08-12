@@ -5,7 +5,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,6 +20,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 
 import de.dkt.common.exceptions.LoggedExceptions;
 import de.dkt.common.feedback.InteractionManagement;
+import de.dkt.common.niftools.NIFReader;
 import de.dkt.common.tools.ParameterChecker;
 import eu.freme.common.conversion.rdf.RDFConstants;
 import eu.freme.common.conversion.rdf.RDFConversionService;
@@ -70,22 +70,15 @@ public class ELuceneServiceStandAlone extends BaseRestController {
 			@RequestHeader(value = "Content-Type", required = false) String contentTypeHeader,
             @RequestParam Map<String, String> allParams,
             
-			@RequestParam(value = "inputType", required = false) String inputType,
 			@RequestParam(value = "indexName", required = false) String index,
 			@RequestParam(value = "indexPath", required = false) String indexPath,
-			@RequestParam(value = "indexCreate", required = false) boolean create,
-			@RequestParam(value = "keepFile", required = false) boolean keepFile,
-//			@RequestParam(value = "file", required = false) MultipartFile file,
-			@RequestParam(value = "fileName", required = false) String fileName,
-			@RequestParam(value = "fileType", required = false) String fileType,
 			@RequestParam(value = "language", required = false) String language,
 			@RequestParam(value = "fields", required = false) String sFields,
 			@RequestParam(value = "analyzers", required = false) String sAnalyzers,
-			@RequestParam(value = "private", required = false) boolean priv,
             @RequestBody(required = false) String postBody) throws Exception {
 
 		ParameterChecker.checkNotNullOrEmpty(index, "indexName", logger);
-		ParameterChecker.checkNotNullOrEmpty(inputType, "inputType", logger);
+		ParameterChecker.checkNotNullOrEmpty(informat, "informat", logger);
 		ParameterChecker.checkInList(language, "en;de;es", "Unsupported language.", logger);
 		
         NIFParameterSet nifParameters = this.normalizeNif(input, informat, outformat, postBody, acceptHeader, contentTypeHeader, prefix);
@@ -96,15 +89,15 @@ public class ELuceneServiceStandAlone extends BaseRestController {
             inModel = rdfConversionService.unserializeRDF(nifParameters.getInput(), nifParameters.getInformat());
         }
         if(inModel==null){
-        	String msg = "";
+        	String msg = "The NIF input model is NULL";
 			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "error", "e-Lucene/indexDocument", msg, "", "Exception", msg, "");
 			throw LoggedExceptions.generateLoggedBadRequestException(logger, msg);
         }
         try {
-        	Model luceneModel = service.indexDocument(inModel, language, sFields, sAnalyzers, index, indexPath, create);
-        	
+        	Model luceneModel = service.indexDocument(inModel, language, sFields, sAnalyzers, index, indexPath);
     		return createSuccessResponse(luceneModel, nifParameters.getOutformat());            
         } catch (Exception e) {
+        	e.printStackTrace();
 			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "error", "e-Lucene/indexDocument", e.getMessage(), "", "Exception", e.getMessage(), "");
 			throw LoggedExceptions.generateLoggedBadRequestException(logger, e.getMessage());
         }
@@ -114,6 +107,7 @@ public class ELuceneServiceStandAlone extends BaseRestController {
             RequestMethod.POST, RequestMethod.GET })
 //	public ResponseEntity<String> execute(
 	public ResponseEntity<String> executeRetrieval(
+			HttpServletRequest request, 
 			@RequestParam(value = "input", required = false) String input,
 			@RequestParam(value = "i", required = false) String i,
 			@RequestParam(value = "informat", required = false) String informat,
@@ -136,29 +130,39 @@ public class ELuceneServiceStandAlone extends BaseRestController {
             @RequestBody(required = false) String postBody) throws Exception {
 
 		ParameterChecker.checkNotNullOrEmpty(indexName, "indexName", logger);
-		ParameterChecker.checkNotNullOrEmpty(inputType, "inputType", logger);
 		ParameterChecker.checkNotNullOrEmpty(language, "language", logger);
 		ParameterChecker.checkInList(language, "en;de;es", "Unsupported language.", logger);
-
-		String inputText = "";
-		
-		if(inputType.equalsIgnoreCase("plaintext")){
-			inputText = input;
+		if (input == null) {
+			input = i;
 		}
-		else if(inputType.equalsIgnoreCase("nif")){
-			inputText = postBody;
+		if (informat == null) {
+			informat = f;
 		}
-		else{
-			logger.error("Input type not supported: only [plaintext/nif]");
-			throw new BadRequestException("Input type not supported: only [plaintext/nif]");
+		if (outformat == null) {
+			outformat = o;
 		}
-		
-//		NIFParameterSet nifParameters = this.normalizeNif(inputText, informat, outformat, postBody, acceptHeader, contentTypeHeader, prefix);
+		if (prefix == null) {
+			prefix = p;
+		}
+		String query = null;
+		NIFParameterSet nifParameters = this.normalizeNif(input, informat, outformat, postBody, acceptHeader, contentTypeHeader, prefix);
+        Model inModel = null;
+        if (nifParameters.getInformat().equals(RDFConstants.RDFSerialization.PLAINTEXT)) {
+        	query = nifParameters.getInput();
+        } else {
+            inModel = rdfConversionService.unserializeRDF(nifParameters.getInput(), nifParameters.getInformat());
+        	query = NIFReader.extractIsString(inModel);
+            if (query == null) {
+    			String msg = "No query to process. Input type not supported: only [plaintext/nif]";
+    			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "error", "e-Sesame/retrieveData", "Input data is not in the proper format ...", "", "Exception", msg, "");
+    			throw new BadRequestException(msg);
+            }
+        }
         try {
-            JSONObject jsonOutputModel = service.callLuceneExtraction(inputType, inputText, language, indexName, indexPath, sFields, sAnalyzers, hits);
+            Model outputModel = service.retrieveDocuments(inputType, query, language, indexName, indexPath, sFields, sAnalyzers, hits);
             HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.add("Content-Type", "application/json");
-            return new ResponseEntity<String>(jsonOutputModel.toString(), responseHeaders, HttpStatus.OK);
+            String output = rdfConversionService.serializeRDF(outputModel, nifParameters.getOutformat());
+            return new ResponseEntity<String>(output, responseHeaders, HttpStatus.OK);
         } catch (BadRequestException e) {
             logger.error(e.getMessage());
             throw new BadRequestException(e.getMessage());

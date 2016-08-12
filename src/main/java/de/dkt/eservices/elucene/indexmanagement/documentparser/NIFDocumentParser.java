@@ -4,21 +4,24 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.TextField;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
 import de.dkt.common.exceptions.LoggedExceptions;
+import de.dkt.common.niftools.ITSRDF;
+import de.dkt.common.niftools.NIF;
 import de.dkt.common.niftools.NIFReader;
+import de.dkt.common.niftools.TIME;
 import de.dkt.eservices.elucene.ELuceneServiceStandAlone;
-import eu.freme.common.conversion.rdf.JenaRDFConversionService;
 import eu.freme.common.conversion.rdf.RDFConstants.RDFSerialization;
-import eu.freme.common.conversion.rdf.RDFConversionService;
 import eu.freme.common.exception.BadRequestException;
 import eu.freme.common.exception.ExternalServiceFailedException;
 
@@ -26,10 +29,6 @@ import eu.freme.common.exception.ExternalServiceFailedException;
  * @author Julian Moreno Schneider julian.moreno_schneider@dfki.de
  *
  * Class that generates a Lucene Document from a NIF file. The lucene document contains three fields:
- * 	- Title: the first line of the TXT file.
- *  - Body: the rest of the TXT file.
- *  - Entities: the whole text = title + body.
- *  - Path: the name of the file.
  */
 public class NIFDocumentParser implements IDocumentParser{
 
@@ -88,60 +87,95 @@ public class NIFDocumentParser implements IDocumentParser{
 		try {
 			Document doc = new Document();
 			String fields2 [] = fields;
-			if(fields2==null || fields2.length==0){
-				fields2 = new String []{"content","entities","temporal","path","nifpath","docURI"};
+			if(fields2==null || fields2.length==0 || (fields.length==1 && fields[0].equalsIgnoreCase("all")) ){
+				fields2 = new String []{"content","entities","links","temporal","nifcontent","docURI"};
 			}
 			
 			for (String fieldString : fields2) {
 				String text = "";
-				Field.Store store = null;
 				if(fieldString.equalsIgnoreCase("content")){
 					text = NIFReader.extractIsString(model);
-					store = Store.YES;
+					doc.add(new TextField(fieldString, text, Store.YES));
 				}
 				else if(fieldString.equalsIgnoreCase("entities")){
-					List<String[]> list = NIFReader.extractEntities(model);
-					for (String[] strings : list) {
-						if(!strings[3].contains("DAT")){
-							text = text + ";" + strings[0];
+					Map<String,Map<String,String>> nonTemporalExpressionsEntities = NIFReader.extractNonTemporalEntitiesExtended(model);
+					if(nonTemporalExpressionsEntities!=null){
+						Set<String> nonTemporalExpressionsKeyset = nonTemporalExpressionsEntities.keySet();
+						for (String nteKey : nonTemporalExpressionsKeyset) {
+							Map<String,String> nteProperties = nonTemporalExpressionsEntities.get(nteKey);
+							Set<String> ntePropertiesKeyset = nteProperties.keySet();
+							for (String propertyKey : ntePropertiesKeyset) {
+								if(propertyKey.equalsIgnoreCase(NIF.anchorOf.getURI())){
+									text = text + ";" + nteProperties.get(propertyKey);
+								}
+							}
 						}
 					}
-					store = Store.YES;
+					doc.add(new TextField(fieldString, text, Store.YES));
+				}
+				else if(fieldString.equalsIgnoreCase("links")){
+					Map<String,Map<String,String>> nonTemporalExpressionsEntities = NIFReader.extractNonTemporalEntitiesExtended(model);
+					if(nonTemporalExpressionsEntities!=null){
+						Set<String> nonTemporalExpressionsKeyset = nonTemporalExpressionsEntities.keySet();
+						for (String nteKey : nonTemporalExpressionsKeyset) {
+							Map<String,String> nteProperties = nonTemporalExpressionsEntities.get(nteKey);
+							Set<String> ntePropertiesKeyset = nteProperties.keySet();
+							for (String propertyKey : ntePropertiesKeyset) {
+								if(propertyKey.equalsIgnoreCase(ITSRDF.taIdentRef.getURI())){
+									text = text + ";" + nteProperties.get(propertyKey);
+								}
+							}
+						}
+					}
+					doc.add(new TextField(fieldString, text, Store.YES));
 				}
 				else if(fieldString.equalsIgnoreCase("temporal")){
-					List<String[]> list = NIFReader.extractEntities(model);
-					for (String[] strings : list) {
-						if(strings[3].contains("DAT")){
-							text = text + ";" + strings[0];
+					Map<String,Map<String,String>> temporalExpressionsEntities = NIFReader.extractTemporalEntitiesExtended(model);
+					if(temporalExpressionsEntities!=null){
+						Set<String> temporalExpressionsKeyset = temporalExpressionsEntities.keySet();
+						for (String teKey : temporalExpressionsKeyset) {
+							Map<String,String> teProperties = temporalExpressionsEntities.get(teKey);
+							Set<String> tePropertiesKeyset = teProperties.keySet();
+							String initialTime = "";
+							String finalTime = "";
+							for (String propertyKey : tePropertiesKeyset) {
+								if(propertyKey.equalsIgnoreCase(TIME.intervalStarts.getURI())){
+									initialTime = teProperties.get(propertyKey);
+								}
+								if(propertyKey.equalsIgnoreCase(TIME.intervalFinishes.getURI())){
+									finalTime = teProperties.get(propertyKey);
+								}
+							}
+							text = text + ";" + initialTime+"_"+finalTime;
 						}
 					}
-					store = Store.YES;
+					doc.add(new TextField(fieldString, text, Store.YES));
+				}
+				else if(fieldString.equalsIgnoreCase("nifContent")){
+					text = NIFReader.model2String(model, "Turtle");
+					doc.add(new StoredField(fieldString, text));
+				}
+				else if(fieldString.equalsIgnoreCase("docURI")){
+					text = NIFReader.extractDocumentWholeURI(model);
+					doc.add(new StoredField(fieldString, text));
 				}
 				else if(fieldString.equalsIgnoreCase("tempMean")){
 				}
 				else if(fieldString.equalsIgnoreCase("tempStDev")){
 				}
-				else if(fieldString.equalsIgnoreCase("path")){
-					text = NIFReader.extractDocumentPath(model);
-					store = Store.YES;
+				else if(fieldString.equalsIgnoreCase("geoLong")){
 				}
-				else if(fieldString.equalsIgnoreCase("nifpath")){
-					text = NIFReader.extractDocumentNIFPath(model);
-					store = Store.YES;
-				}
-				else if(fieldString.equalsIgnoreCase("docURI")){
-					text = NIFReader.extractDocumentURI(model);
-					store = Store.YES;
+				else if(fieldString.equalsIgnoreCase("geoLat")){
 				}
 				else{
 					text = NIFReader.extractIsString(model);
-					store = Store.YES;
+					doc.add(new TextField(fieldString, text, Store.YES));
 				}
-				doc.add(new TextField(fieldString, text, store));
 			}
 	//		doc.add(new TextField("contents", new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))));
 			return doc;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw LoggedExceptions.generateLoggedExternalServiceFailedException(logger, e.getMessage());
 		}
 	}

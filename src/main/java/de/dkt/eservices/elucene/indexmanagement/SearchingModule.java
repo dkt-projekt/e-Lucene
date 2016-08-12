@@ -5,24 +5,20 @@ import java.io.IOException;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.util.Version;
-import org.json.JSONObject;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
+import de.dkt.common.exceptions.LoggedExceptions;
 import de.dkt.common.filemanagement.FileFactory;
 import de.dkt.eservices.elucene.indexmanagement.queryparser.OwnQueryParser;
-import de.dkt.eservices.elucene.indexmanagement.resultconverter.JSONLuceneResultConverter;
+import de.dkt.eservices.elucene.indexmanagement.resultconverter.LuceneResultConverterToJENA;
 import eu.freme.common.exception.BadRequestException;
 import eu.freme.common.exception.ExternalServiceFailedException;
 
@@ -33,21 +29,12 @@ import eu.freme.common.exception.ExternalServiceFailedException;
  *
  */
 public class SearchingModule {
-
 	static Logger logger = Logger.getLogger(SearchingModule.class);
-
-	private static Version luceneVersion = Version.LUCENE_3_0;
-	
+//	private static Version luceneVersion = Version.LUCENE_4_9;
 	private static String indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/";
 	
-	private SearchingModule() {}
-
-//	/** Simple command-line based search demo. */
-//	public static void main(String[] args) throws Exception {
-//		SearchFiles.indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/tests/luceneindexes/";
-//		JSONObject result = SearchFiles.search("test3", "content", "standard", "plaintext", "Sanjurjo","en",10);
-//		System.out.println(result);
-//	}
+	private SearchingModule() {
+	}
 
 	/**
 	 * Searches a query against a field of an index and return hitsToReturn documents.
@@ -58,7 +45,7 @@ public class SearchingModule {
 	 * @return JSON format string containing the results information and content
 	 * @throws ExternalServiceFailedException
 	 */
-	public static JSONObject search(String index,String sFields, String sAnalyzers, String queryType, String queryString, String language, int hitsToReturn) throws ExternalServiceFailedException {
+	public static Model search(String index,String sFields, String sAnalyzers, String queryType, String queryString, String language, int hitsToReturn) throws ExternalServiceFailedException {
 		try{
 //			System.out.println(index+"__"+sFields+"__"+sAnalyzers+"__"+queryType+"__"+language+"__"+hitsToReturn);
 //			System.out.println(indexDirectory);
@@ -73,42 +60,28 @@ public class SearchingModule {
 			IndexReader reader = DirectoryReader.open(dir);
 			IndexSearcher searcher = new IndexSearcher(reader);
 			
-//			System.out.println(reader.docFreq(new Term("content", "madrid")));
-			
-			Document doc = reader.document(0);
-//			System.out.println(reader.numDocs());
-//			System.out.println(doc);
-			
+//			Document doc = reader.document(0);
 			String[] fields = sFields.split(";");
 			String[] analyzers = sAnalyzers.split(";");
 			if(fields.length!=analyzers.length){
 				logger.error("The number of fields and analyzers is different");
 				throw new BadRequestException("The number of fields and analyzers is different");
 			}
-			
-//System.out.println("CHECK IF THE QUERY IS WORKING PROPERLY: "+queryString);
-			Query query = OwnQueryParser.parseQuery(queryType, queryString, fields, analyzers, language);
-
-//System.out.println("\t QUERY: "+query);
+			Query query = OwnQueryParser.parseQuery(queryString, fields, analyzers, language);
 			
 			TopDocs results = searcher.search(query, hitsToReturn);
+//			Explanation exp = searcher.explain(query, 0);
 
-			Explanation exp = searcher.explain(query, 0);
-//			System.out.println("EXPLANATION: "+exp);
-
-//			System.out.println("TOTAL HITS: " + results.totalHits);
-			
 			Date end = new Date();
 			logger.info("Time: "+(end.getTime()-start.getTime())+"ms");
 //			System.out.println("Time: "+(end.getTime()-start.getTime())+"ms");
-
-			JSONObject resultModel = JSONLuceneResultConverter.convertResults(query, searcher, results);
+//			JSONObject resultModel = JSONLuceneResultConverter.convertResults(query, searcher, results);
+			Model resultModel = LuceneResultConverterToJENA.convertResults(query, searcher, results);
 			reader.close();
 			return resultModel;
 		}
 		catch(IOException e){
-			e.printStackTrace();
-			throw new ExternalServiceFailedException("IOException with message: "+e.getMessage());
+			throw LoggedExceptions.generateLoggedExternalServiceFailedException(logger, e.getMessage());
 		}
 	}
 
@@ -119,6 +92,4 @@ public class SearchingModule {
 	public static void setIndexDirectory(String indexDirectory) {
 		SearchingModule.indexDirectory = indexDirectory;
 	}
-	
-	
 }

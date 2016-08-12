@@ -19,6 +19,7 @@ import org.apache.lucene.util.Version;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
+import de.dkt.common.exceptions.LoggedExceptions;
 import de.dkt.common.filemanagement.FileFactory;
 import de.dkt.common.niftools.NIFReader;
 import de.dkt.common.niftools.NIFWriter;
@@ -70,8 +71,8 @@ public class IndexingModule {
 		String[] fields = sFields.split(";");
 		String[] analyzers = sAnalyzers.split(";");
 		if(fields.length!=analyzers.length){
-			logger.error("The number of fields and analyzers is different");
-			throw new BadRequestException("The number of fields and analyzers is different");
+			String msg = "The number of fields and analyzers is different";
+        	throw LoggedExceptions.generateLoggedExternalServiceFailedException(logger, msg);
 		}
 		
 		for (int i = 0; i < fields.length; i++) {
@@ -98,9 +99,8 @@ public class IndexingModule {
 			writer.addDocument(doc);
 		}
 		catch (IOException e){
-			e.printStackTrace();
 			writer.close();
-			throw e;
+        	throw LoggedExceptions.generateLoggedExternalServiceFailedException(logger, "Error adding document to index::"+e.getMessage());
 		}
 		writer.commit();
 		writer.close();

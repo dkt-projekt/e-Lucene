@@ -189,7 +189,7 @@ public class IndexesRepository {
 		if(file==null || file.equals("")){
 			return false;
 		}
-		ClassPathResource cpr = new ClassPathResource(file);
+//		ClassPathResource cpr = new ClassPathResource(file);
 		
 		//TODO
 		
