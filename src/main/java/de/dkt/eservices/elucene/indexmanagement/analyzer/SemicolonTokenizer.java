@@ -77,7 +77,7 @@ public class SemicolonTokenizer extends Tokenizer {
 	 * an IOException is raised - you can choose how you want to deal with the IOException, but for our purposes, we do not need to try to recover from it.
      */
     public SemicolonTokenizer(Reader reader) {
-        super(reader);
+        super();
         int numChars;
         char[] buffer = new char[1024];
         StringBuilder stringBuilder = new StringBuilder();

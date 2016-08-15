@@ -5,7 +5,6 @@ import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.util.Version;
 
 /**
  * @author jmschnei
@@ -13,7 +12,7 @@ import org.apache.lucene.util.Version;
  */
 public class AnalyzerFactory {
 
-	public static Analyzer getAnalyzer(String analyzer,String language,Version matchVersion){
+	public static Analyzer getAnalyzer(String analyzer,String language){
 		
 		if(analyzer.equalsIgnoreCase("NERAnalyzer")){
 			return new NERAnalyzer();
@@ -22,11 +21,11 @@ public class AnalyzerFactory {
 			return new TEMPAnalyzer();
 		}
 		if(analyzer.equalsIgnoreCase("WhiteSpace")){
-			return new WhitespaceAnalyzer(matchVersion);
+			return new WhitespaceAnalyzer();
 		}
 		if(language.equalsIgnoreCase("spanish") || language.equalsIgnoreCase("es") || language.equalsIgnoreCase("spa")){
 			if(analyzer.equalsIgnoreCase("standard")){
-				return new SpanishAnalyzer(matchVersion);
+				return new SpanishAnalyzer();
 			}
 //			else if(analyzer.equalsIgnoreCase("entity")){
 //			return new EntitiesAnalyzer(matchVersion, language);
@@ -36,13 +35,13 @@ public class AnalyzerFactory {
 //			}
 		}
 		if(language.equalsIgnoreCase("german") || language.equalsIgnoreCase("de") || language.equalsIgnoreCase("ger")){
-			return new GermanAnalyzer(matchVersion);
+			return new GermanAnalyzer();
 		}
 		if(language.equalsIgnoreCase("english") || language.equalsIgnoreCase("en") || language.equalsIgnoreCase("eng")){
 			if(analyzer.equalsIgnoreCase("standard")){
-				return new StandardAnalyzer(matchVersion);
+				return new StandardAnalyzer();
 			}
 		}
-		return new StandardAnalyzer(matchVersion);
+		return new StandardAnalyzer();
 	}
 }

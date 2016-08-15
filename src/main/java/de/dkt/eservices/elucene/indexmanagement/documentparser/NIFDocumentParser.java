@@ -3,7 +3,6 @@ package de.dkt.eservices.elucene.indexmanagement.documentparser;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -152,7 +151,7 @@ public class NIFDocumentParser implements IDocumentParser{
 					doc.add(new TextField(fieldString, text, Store.YES));
 				}
 				else if(fieldString.equalsIgnoreCase("nifContent")){
-					text = NIFReader.model2String(model, "Turtle");
+					text = NIFReader.model2String(model, RDFSerialization.TURTLE);
 					doc.add(new StoredField(fieldString, text));
 				}
 				else if(fieldString.equalsIgnoreCase("docURI")){

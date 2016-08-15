@@ -1,12 +1,11 @@
 package de.dkt.eservices.elucene.indexmanagement.analyzer;
 
-import java.io.Reader;
+import java.io.StringReader;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.Tokenizer;
 import org.apache.lucene.analysis.core.LowerCaseFilter;
-import org.apache.lucene.util.Version;
 
 public class TEMPAnalyzer extends Analyzer{
 
@@ -15,10 +14,11 @@ public class TEMPAnalyzer extends Analyzer{
 	 * of token filters that operate on it. 
 	 */
 	@Override
-	protected TokenStreamComponents createComponents(String field,Reader reader) {
+	protected TokenStreamComponents createComponents(String text) {
+		StringReader reader = new StringReader(text);
 		Tokenizer tokenizer = new SemicolonTokenizer(reader);
 		TokenStream filter = new TemporalNormalizationTokenFilter(tokenizer);
-		filter = new LowerCaseFilter(Version.LUCENE_4_9,filter);
+		filter = new LowerCaseFilter(filter);
 		return new TokenStreamComponents(tokenizer, filter);
 	}
 }

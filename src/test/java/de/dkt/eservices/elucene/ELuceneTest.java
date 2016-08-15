@@ -3,6 +3,7 @@ package de.dkt.eservices.elucene;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,6 +18,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequestWithBody;
 
+import de.dkt.common.niftools.NIFManagement;
 import de.dkt.common.niftools.NIFReader;
 import eu.freme.bservices.testhelper.TestHelper;
 import eu.freme.bservices.testhelper.ValidationHelper;
@@ -114,7 +116,12 @@ public class ELuceneTest {
 				.asString();
 		Assert.assertEquals(response.getStatus(), 200);
 		assertTrue(response.getBody().length() > 0);
-		Assert.assertEquals(TestConstants.expectedRetrievalOutput, response.getBody());
+		
+		Model collectionModel = NIFReader.extractModelFromFormatString(response.getBody(), RDFSerialization.TURTLE);
+		List<Model> documents = NIFManagement.extractDocumentsModels(collectionModel);
+		System.out.println("DEBUG: documetns retrieved: "+documents.size());
+		assertTrue(documents.size() > 0);
+		
 	}
 
 }

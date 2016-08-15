@@ -6,8 +6,8 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.BooleanQuery.Builder;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.util.Version;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -16,11 +16,9 @@ import de.dkt.eservices.elucene.indexmanagement.analyzer.AnalyzerFactory;
 import eu.freme.common.exception.ExternalServiceFailedException;
 
 public class OwnQueryParser {
-
-	private static Version luceneVersion = Version.LUCENE_4_9;
 	
 	public static Query parseQuery(String queryContent, String[] fields, String [] analyzers, String language){
-		BooleanQuery booleanQuery = new BooleanQuery();
+		Builder buil = new Builder();
 		try{
 			String queryString = queryContent;
 			if(fields==null || fields.length==0 || (fields.length==1 && fields[0].equalsIgnoreCase("all")) ){
@@ -28,31 +26,32 @@ public class OwnQueryParser {
 				analyzers = new String []{"standard","standard","standard","standard","standard","standard"};
 			}
 			for (int i = 0; i < fields.length; i++) {
-				Analyzer particularAnalyzer = AnalyzerFactory.getAnalyzer(analyzers[i],language,luceneVersion);
-				QueryParser parser1 = new QueryParser(luceneVersion,fields[i], particularAnalyzer);
+				Analyzer particularAnalyzer = AnalyzerFactory.getAnalyzer(analyzers[i],language);
+				QueryParser parser1 = new QueryParser(fields[i], particularAnalyzer);
 				Query query1 = parser1.parse(queryString);
-				booleanQuery.add(query1, BooleanClause.Occur.SHOULD);
+				buil.add(query1, BooleanClause.Occur.SHOULD);
 			}
 		}
 		catch(Exception e){
 			e.printStackTrace();
 			throw new ExternalServiceFailedException(e.getMessage());
 		}
+		BooleanQuery booleanQuery = buil.build();
 		return booleanQuery;
 	}
 
 	public static Query parseComplexQuery(String queryType, String queryContent, String[] fields, String [] analyzers, String language){
-		BooleanQuery booleanQuery = new BooleanQuery();
+		Builder buil = new Builder();
 		try{
 			if(queryType.equalsIgnoreCase("nif")){
 				Model nifModel = NIFReader.extractModelFromString(queryContent);
 				String textContent = NIFReader.extractIsString(nifModel);
 				List<String[]> entities = NIFReader.extractEntities(nifModel);
 				
-				Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], language, luceneVersion);
-				QueryParser parser1 = new QueryParser(luceneVersion,"content", analyzer);
+				Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], language);
+				QueryParser parser1 = new QueryParser("content", analyzer);
 				Query query1 = parser1.parse(textContent);
-				booleanQuery.add(query1, BooleanClause.Occur.SHOULD);
+				buil.add(query1, BooleanClause.Occur.SHOULD);
 
 				String entString = "";
 				String tempString = "";
@@ -93,17 +92,17 @@ public class OwnQueryParser {
 				String queryString = queryContent;
 				if(fields.length==1){
 					String field = (queryType.equalsIgnoreCase("plaintext")) ? "content" : fields[0];
-					Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], language, luceneVersion);
-					QueryParser parser1 = new QueryParser(luceneVersion,field, analyzer);
+					Analyzer analyzer = AnalyzerFactory.getAnalyzer(analyzers[0], language);
+					QueryParser parser1 = new QueryParser(field, analyzer);
 					Query query1 = parser1.parse(queryString);
-					booleanQuery.add(query1, BooleanClause.Occur.SHOULD);
+					buil.add(query1, BooleanClause.Occur.SHOULD);
 				}
 				else{
 					for (int i = 0; i < fields.length; i++) {
-						Analyzer particularAnalyzer = AnalyzerFactory.getAnalyzer(analyzers[i],language,luceneVersion);
-						QueryParser parser1 = new QueryParser(luceneVersion,fields[i], particularAnalyzer);
+						Analyzer particularAnalyzer = AnalyzerFactory.getAnalyzer(analyzers[i],language);
+						QueryParser parser1 = new QueryParser(fields[i], particularAnalyzer);
 						Query query1 = parser1.parse(queryString);
-						booleanQuery.add(query1, BooleanClause.Occur.SHOULD);
+						buil.add(query1, BooleanClause.Occur.SHOULD);
 					}
 				}
 			}
@@ -112,6 +111,7 @@ public class OwnQueryParser {
 			e.printStackTrace();
 			throw new ExternalServiceFailedException(e.getMessage());
 		}
+		BooleanQuery booleanQuery = buil.build();
 		return booleanQuery;
 	}
 

@@ -2,6 +2,7 @@ package de.dkt.eservices.elucene.indexmanagement;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -30,7 +31,6 @@ import eu.freme.common.exception.ExternalServiceFailedException;
  */
 public class SearchingModule {
 	static Logger logger = Logger.getLogger(SearchingModule.class);
-//	private static Version luceneVersion = Version.LUCENE_4_9;
 	private static String indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/";
 	
 	private SearchingModule() {
@@ -56,7 +56,8 @@ public class SearchingModule {
 				throw new ExternalServiceFailedException("Specified index ["+indexDirectory + index+"] does not exists.");
 			}
 			logger.info("Searching in folder: "+f.getAbsolutePath());
-			Directory dir = FSDirectory.open(f);
+			Path path = f.toPath();
+			Directory dir = FSDirectory.open(path);
 			IndexReader reader = DirectoryReader.open(dir);
 			IndexSearcher searcher = new IndexSearcher(reader);
 			

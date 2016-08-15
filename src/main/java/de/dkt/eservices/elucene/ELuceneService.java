@@ -3,7 +3,6 @@ package de.dkt.eservices.elucene;
 import java.io.File;
 
 import org.apache.log4j.Logger;
-import org.neo4j.cypher.internal.compiler.v2_1.perty.printToString;
 import org.springframework.stereotype.Component;
 
 import com.hp.hpl.jena.rdf.model.Model;

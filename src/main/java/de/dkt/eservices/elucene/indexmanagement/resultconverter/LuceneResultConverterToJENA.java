@@ -34,7 +34,7 @@ public class LuceneResultConverterToJENA {
 			for (int i = 0; i < numTotalHits; i++) {
 				Document doc = searcher.doc(hits[i].doc);
 				String nifContent = doc.get("nifcontent"); 
-				System.out.println("DEBUG: nifcontent: "+nifContent);
+//				System.out.println("DEBUG: nifcontent: "+nifContent);
 				Model docModel = NIFReader.extractModelFromFormatString(nifContent, RDFSerialization.TURTLE);
 				NIFManagement.addDocumentToCollection(collectionModel, docModel);
 			}
