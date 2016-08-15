@@ -92,10 +92,19 @@ public class ELuceneTest {
 		assertTrue(response.getBody().length() > 0);
 		
 		try {
+			String OS = System.getProperty("os.name");
+			String storageLocation = null;
+			if(OS.startsWith("Mac")){
+				storageLocation = "/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/";
+			}
+			else if(OS.startsWith("Windows")){
+				storageLocation = "C:/tests/sesame/";
+			}
+			else if(OS.startsWith("Linux")){
+				storageLocation = "/opt/storage/luceneStorage/";
+			}
 			Model mInput = NIFReader.extractModelFromFormatString(TestConstants.outputModel, RDFSerialization.TURTLE);
-			Model mOutput = NIFReader.extractModelFromFormatString(response.getBody(), RDFSerialization.TURTLE);
-			System.out.println("DEBUG: "+response.getBody());
-//			Assert.assertTrue(true);
+			Model mOutput = NIFReader.extractModelFromFormatString(response.getBody().replace(storageLocation, "LUCENESTORAGE"), RDFSerialization.TURTLE);
 			Assert.assertTrue(mInput.isIsomorphicWith(mOutput));
 		} catch (Exception e) {
 			Assert.assertTrue(false);

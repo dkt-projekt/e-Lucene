@@ -164,7 +164,8 @@ public class TestConstants {
 			"        nif:endIndex         \"806\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:geoStandardDevs  \"1.421155171522152_1.8662593699060581\"^^xsd:string ;\n" +
 	        "        nif:indexName        \"test1\"^^xsd:string ;\n" + 
-	        "        nif:indexPath        \"/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/\"^^xsd:string ;\n" + 
+//	        "        nif:indexPath        \"/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/\"^^xsd:string ;\n" + 
+			"        nif:indexPath        \"LUCENESTORAGE\"^^xsd:string ;\n" + 
 			"        nif:isString         \"1936\\n\\nCoup leader Sanjurjo was killed in a plane crash on 20 July, leaving an effective command split between Mola in the North and Franco in the South. On 21 July, the fifth day of the rebellion, the Nationalists captured the main Spanish naval base at Ferrol in northwestern Spain. A rebel force under Colonel Beorlegui Canet, sent by General Emilio Mola, undertook the Campaign of Guipuzcoa from July to September. The capture of Guipuzcoa isolated the Republican provinces in the north. On 5 September, after heavy fighting the force took Irun, closing the French border to the Republicans. On 13 September, the Basques surrendered Madrid to the Nationalists, who then advanced toward their capital, Bilbao. The Republican militias on the border of Viscaya halted these forces at the end of September.\\n\"^^xsd:string ;\n" +
 			"        nif:meanDateRange    \"19360531090000_19361022090000\"^^xsd:string .\n" +
 			"\n" +
