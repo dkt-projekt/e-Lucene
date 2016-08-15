@@ -94,6 +94,7 @@ public class ELuceneTest {
 		try {
 			Model mInput = NIFReader.extractModelFromFormatString(TestConstants.outputModel, RDFSerialization.TURTLE);
 			Model mOutput = NIFReader.extractModelFromFormatString(response.getBody(), RDFSerialization.TURTLE);
+			System.out.println("DEBUG: "+response.getBody());
 //			Assert.assertTrue(true);
 			Assert.assertTrue(mInput.isIsomorphicWith(mOutput));
 		} catch (Exception e) {
