@@ -31,7 +31,8 @@ A nif model containing information tot he index where the document has been stor
 
 Example cURL post for using the `document storage`:
 
-> curl -X POST -d '@prefix dktnif: <http://dkt.dfki.de/ontologies/nif#> .
+```
+curl -X POST -d '@prefix dktnif: <http://dkt.dfki.de/ontologies/nif#> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix itsrdf: <http://www.w3.org/2005/11/its/rdf#> .
@@ -49,6 +50,7 @@ Example cURL post for using the `document storage`:
         nif:beginIndex  "0"^^xsd:nonNegativeInteger ;
         nif:endIndex    "26"^^xsd:nonNegativeInteger ;
         nif:isString    "Welcome to Berlin in 2016."^^xsd:string .' "http://dev.digitale-kuratierung.de/api/e-lucene/indexDocument?indexName=lucene2&language=en&fields=all&analyzers=standard"
+```
 
 ## Document Retrieval
 
@@ -82,5 +84,6 @@ A NIF model with a self defined collection containing the retrieved documents.
 ### Example
 Example cURL post for using the `semantic information storage`:  
 
-> `curl -X POST "http://dev.digitale-kuratierung.de/api/e-lucene/retrieveDocuments?indexName=lucene2&inputType=text&language=en&fields=all&analyzers=standard&hits=50"`
-
+```
+curl -X POST "http://dev.digitale-kuratierung.de/api/e-lucene/retrieveDocuments?indexName=lucene2&inputType=text&language=en&fields=all&analyzers=standard&hits=50"
+```
