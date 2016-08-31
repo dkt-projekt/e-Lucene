@@ -18,11 +18,11 @@ public class TestConstants {
 			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360905000000_19360906000000> .\n" +
 			"\n" +
-			"<http://dkt.dfki.de/examples/#char=0,806>\n" +
+			"<http://dkt.dfki.de/examples/#char=0,805>\n" +
 			"        a                    nif:RFC5147String , nif:String , nif:Context ;\n" +
 			"        nif:beginIndex       \"0\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:centralGeoPoint  \"42.039727380952385_-4.008917460317461\"^^xsd:string ;\n" +
-			"        nif:endIndex         \"806\"^^xsd:nonNegativeInteger ;\n" +
+			"        nif:endIndex         \"805\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:geoStandardDevs  \"1.421155171522152_1.8662593699060581\"^^xsd:string ;\n" +
 			"        nif:isString         \"1936\\n\\nCoup leader Sanjurjo was killed in a plane crash on 20 July, leaving an effective command split between Mola in the North and Franco in the South. On 21 July, the fifth day of the rebellion, the Nationalists captured the main Spanish naval base at Ferrol in northwestern Spain. A rebel force under Colonel Beorlegui Canet, sent by General Emilio Mola, undertook the Campaign of Guipuzcoa from July to September. The capture of Guipuzcoa isolated the Republican provinces in the north. On 5 September, after heavy fighting the force took Irun, closing the French border to the Republicans. On 13 September, the Basques surrendered Madrid to the Nationalists, who then advanced toward their capital, Bilbao. The Republican militias on the border of Viscaya halted these forces at the end of September.\\n\"^^xsd:string ;\n" +
 			"        nif:meanDateRange    \"19360531090000_19361022090000\"^^xsd:string .\n" +
@@ -49,7 +49,7 @@ public class TestConstants {
 			"        nif:beginIndex        \"146\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"151\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
-			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Southern_United_States> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=636,642>\n" +
@@ -59,7 +59,7 @@ public class TestConstants {
 			"        nif:endIndex          \"642\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"40.4_-3.6833333333333336\"^^xsd:string ;\n" +
-			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Madrid> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=0,4>\n" +
@@ -85,7 +85,7 @@ public class TestConstants {
 			"        nif:endIndex          \"282\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.0_-4.0\"^^xsd:string ;\n" +
-			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Spain> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=788,804>\n" +
@@ -119,7 +119,7 @@ public class TestConstants {
 			"        nif:endIndex          \"260\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.46666666666667_-8.25\"^^xsd:string ;\n" +
-			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Ferrol,_Galicia> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=704,710>\n" +
@@ -129,7 +129,7 @@ public class TestConstants {
 			"        nif:endIndex          \"710\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.25694444444444_-2.923611111111111\"^^xsd:string ;\n" +
-			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Bilbao> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=543,547>\n" +
@@ -139,7 +139,7 @@ public class TestConstants {
 			"        nif:endIndex          \"547\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.33781388888889_-1.788811111111111\"^^xsd:string ;\n" +
-			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Irun> .\n" +
 			"";
 
@@ -157,11 +157,11 @@ public class TestConstants {
 			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360905000000_19360906000000> .\n" +
 			"\n" +
-			"<http://dkt.dfki.de/examples/#char=0,806>\n" +
+			"<http://dkt.dfki.de/examples/#char=0,805>\n" +
 			"        a                    nif:RFC5147String , nif:String , nif:Context ;\n" +
 			"        nif:beginIndex       \"0\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:centralGeoPoint  \"42.039727380952385_-4.008917460317461\"^^xsd:string ;\n" +
-			"        nif:endIndex         \"806\"^^xsd:nonNegativeInteger ;\n" +
+			"        nif:endIndex         \"805\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:geoStandardDevs  \"1.421155171522152_1.8662593699060581\"^^xsd:string ;\n" +
 	        "        nif:indexName        \"test1\"^^xsd:string ;\n" + 
 //	        "        nif:indexPath        \"/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/\"^^xsd:string ;\n" + 
@@ -191,7 +191,7 @@ public class TestConstants {
 			"        nif:beginIndex        \"146\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"151\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
-			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Southern_United_States> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=636,642>\n" +
@@ -201,7 +201,7 @@ public class TestConstants {
 			"        nif:endIndex          \"642\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"40.4_-3.6833333333333336\"^^xsd:string ;\n" +
-			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Madrid> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=0,4>\n" +
@@ -227,7 +227,7 @@ public class TestConstants {
 			"        nif:endIndex          \"282\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.0_-4.0\"^^xsd:string ;\n" +
-			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Spain> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=788,804>\n" +
@@ -261,7 +261,7 @@ public class TestConstants {
 			"        nif:endIndex          \"260\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.46666666666667_-8.25\"^^xsd:string ;\n" +
-			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Ferrol,_Galicia> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=704,710>\n" +
@@ -271,7 +271,7 @@ public class TestConstants {
 			"        nif:endIndex          \"710\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.25694444444444_-2.923611111111111\"^^xsd:string ;\n" +
-			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Bilbao> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=543,547>\n" +
@@ -281,7 +281,7 @@ public class TestConstants {
 			"        nif:endIndex          \"547\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.33781388888889_-1.788811111111111\"^^xsd:string ;\n" +
-			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Irun> .\n" +
 			"";
 
@@ -299,11 +299,11 @@ public class TestConstants {
 "        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 "        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360905000000_19360906000000> .\n" +
 "\n" +
-"<http://dkt.dfki.de/examples/#char=0,806>\n" +
+"<http://dkt.dfki.de/examples/#char=0,805>\n" +
 "        a                    nif:RFC5147String , nif:String , nif:Context ;\n" +
 "        nif:beginIndex       \"0\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:centralGeoPoint  \"42.039727380952385_-4.008917460317461\"^^xsd:string ;\n" +
-"        nif:endIndex         \"806\"^^xsd:nonNegativeInteger ;\n" +
+"        nif:endIndex         \"805\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:geoStandardDevs  \"1.421155171522152_1.8662593699060581\"^^xsd:string ;\n" +
 "        nif:indexName        \"test1\"^^xsd:string ;\n" +
 "        nif:indexPath        \"storage/\"^^xsd:string ;\n" +
@@ -332,7 +332,7 @@ public class TestConstants {
 "        nif:beginIndex        \"146\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex          \"151\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
-"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 "        itsrdf:taIdentRef     <http://dbpedia.org/resource/Southern_United_States> .\n" +
 "\n" +
 "<http://dkt.dfki.de/examples/#char=636,642>\n" +
@@ -342,7 +342,7 @@ public class TestConstants {
 "        nif:endIndex          \"642\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 "        nif:geoPoint          \"40.4_-3.6833333333333336\"^^xsd:string ;\n" +
-"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 "        itsrdf:taIdentRef     <http://dbpedia.org/resource/Madrid> .\n" +
 "\n" +
 "<http://dkt.dfki.de/examples/#char=0,4>\n" +
@@ -368,7 +368,7 @@ public class TestConstants {
 "        nif:endIndex          \"282\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 "        nif:geoPoint          \"43.0_-4.0\"^^xsd:string ;\n" +
-"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 "        itsrdf:taIdentRef     <http://dbpedia.org/resource/Spain> .\n" +
 "\n" +
 "<http://dkt.dfki.de/examples/#char=58,65>\n" +
@@ -402,7 +402,7 @@ public class TestConstants {
 "        nif:endIndex          \"260\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 "        nif:geoPoint          \"43.46666666666667_-8.25\"^^xsd:string ;\n" +
-"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 "        itsrdf:taIdentRef     <http://dbpedia.org/resource/Ferrol,_Galicia> .\n" +
 "\n" +
 "<http://dkt.dfki.de/examples/#char=704,710>\n" +
@@ -412,7 +412,7 @@ public class TestConstants {
 "        nif:endIndex          \"710\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 "        nif:geoPoint          \"43.25694444444444_-2.923611111111111\"^^xsd:string ;\n" +
-"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 "        itsrdf:taIdentRef     <http://dbpedia.org/resource/Bilbao> .\n" +
 "\n" +
 "<http://dkt.dfki.de/examples/#char=543,547>\n" +
@@ -422,7 +422,7 @@ public class TestConstants {
 "        nif:endIndex          \"547\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 "        nif:geoPoint          \"43.33781388888889_-1.788811111111111\"^^xsd:string ;\n" +
-"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,806> ;\n" +
+"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 "        itsrdf:taIdentRef     <http://dbpedia.org/resource/Irun> .\n" +
 			"";
 	

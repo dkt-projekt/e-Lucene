@@ -13,6 +13,8 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -29,9 +31,12 @@ import eu.freme.common.exception.ExternalServiceFailedException;
  * @author Julian Moreno Schneider - julian.moreno_schneider@dfki.de
  *
  */
+@Component
 public class SearchingModule {
 	static Logger logger = Logger.getLogger(SearchingModule.class);
-	private static String indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/";
+	
+	@Value("${luceneIndexPath}")
+	private String luceneIndexPath;
 	
 	private SearchingModule() {
 	}
@@ -45,15 +50,15 @@ public class SearchingModule {
 	 * @return JSON format string containing the results information and content
 	 * @throws ExternalServiceFailedException
 	 */
-	public static Model search(String index,String sFields, String sAnalyzers, String queryType, String queryString, String language, int hitsToReturn) throws ExternalServiceFailedException {
+	public Model search(String index,String sFields, String sAnalyzers, String queryType, String queryString, String language, int hitsToReturn) throws ExternalServiceFailedException {
 		try{
 //			System.out.println(index+"__"+sFields+"__"+sAnalyzers+"__"+queryType+"__"+language+"__"+hitsToReturn);
 //			System.out.println(indexDirectory);
 			Date start = new Date();
 
-			File f = FileFactory.generateFileInstance(indexDirectory + index);
+			File f = FileFactory.generateFileInstance(luceneIndexPath + index);
 			if(f==null || !f.exists()){
-				throw new ExternalServiceFailedException("Specified index ["+indexDirectory + index+"] does not exists.");
+				throw new ExternalServiceFailedException("Specified index ["+luceneIndexPath + index+"] does not exists.");
 			}
 			logger.info("Searching in folder: "+f.getAbsolutePath());
 			Path path = f.toPath();
@@ -86,11 +91,11 @@ public class SearchingModule {
 		}
 	}
 
-	public static String getIndexDirectory() {
-		return indexDirectory;
+	public String getIndexDirectory() {
+		return luceneIndexPath;
 	}
 
-	public static void setIndexDirectory(String indexDirectory) {
-		SearchingModule.indexDirectory = indexDirectory;
+	public void setIndexDirectory(String indexDirectory) {
+		this.luceneIndexPath = indexDirectory;
 	}
 }

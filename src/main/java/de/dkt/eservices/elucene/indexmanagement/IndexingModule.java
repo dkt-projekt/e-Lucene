@@ -16,6 +16,8 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
@@ -33,12 +35,14 @@ import eu.freme.common.exception.ExternalServiceFailedException;
  * @author Julian Moreno Schneider - julian.moreno_schneider@dfki.de
  *
  */
+@Component
 public class IndexingModule {
 
 	static Logger logger = Logger.getLogger(IndexingModule.class);
-		
-	private static String indexDirectory  ="/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining2/luceneStorage/";
-	private static boolean indexCreate = false;
+	
+	@Value("${luceneIndexPath}")
+	private String luceneIndexPath;
+	private boolean indexCreate = false;
 
 	private IndexingModule() {}
 
@@ -54,11 +58,11 @@ public class IndexingModule {
 	 * @throws IOException
 	 * @throws ExternalServiceFailedException
 	 */
-	public static Model indexModel(Model docContent,String index, String sFields, String sAnalyzers, String language) throws IOException,ExternalServiceFailedException{
+	public Model indexModel(Model docContent,String index, String sFields, String sAnalyzers, String language) throws IOException,ExternalServiceFailedException{
 		Date start = new Date();
-		logger.info("Indexing to directory '" + indexDirectory + index + "'...");
+		logger.info("Indexing to directory '" + luceneIndexPath + index + "'...");
 
-		File f = FileFactory.generateOrCreateDirectoryInstance(indexDirectory + index);
+		File f = FileFactory.generateOrCreateDirectoryInstance(luceneIndexPath + index);
 		Path path = f.toPath();
 		Directory dir = FSDirectory.open(path);
 
@@ -104,25 +108,25 @@ public class IndexingModule {
 		Date end = new Date();
 		logger.info(end.getTime() - start.getTime() + " total milliseconds");
 
-		NIFWriter.addLuceneIndexingInformation(docContent, index, indexDirectory);
+		NIFWriter.addLuceneIndexingInformation(docContent, index, luceneIndexPath);
 		return docContent;
 	}
 
-	public static String getIndexDirectory() {
-		return indexDirectory;
+	public String getIndexDirectory() {
+		return luceneIndexPath;
 	}
 
-	public static void setIndexDirectory(String indexDirectory) {
-		IndexingModule.indexDirectory = indexDirectory;
+	public void setIndexDirectory(String indexDirectory) {
+		this.luceneIndexPath = indexDirectory;
 	}
 
 
-	public static boolean isIndexCreate() {
+	public boolean isIndexCreate() {
 		return indexCreate;
 	}
 
-	public static void setIndexCreate(boolean indexCreate) {
-		IndexingModule.indexCreate = indexCreate;
+	public void setIndexCreate(boolean indexCreate) {
+		this.indexCreate = indexCreate;
 	}
 
 	

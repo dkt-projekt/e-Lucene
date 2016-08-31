@@ -24,7 +24,7 @@ public class LuceneResultConverterToJENA {
 	public static Model convertResults(Query query,IndexSearcher searcher,TopDocs results) throws ExternalServiceFailedException{
 		try{
 			ScoreDoc[] hits = results.scoreDocs;
-			int numTotalHits = results.totalHits;
+			int numTotalHits = hits.length;//results.totalHits;
 			System.out.println(numTotalHits);
 			Date d = new Date();
 			String prefix = "http://dkt.dfki.de/collection/retrievedDocuments/"+d.getTime();

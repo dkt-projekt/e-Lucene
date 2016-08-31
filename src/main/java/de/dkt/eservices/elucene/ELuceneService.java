@@ -3,6 +3,7 @@ package de.dkt.eservices.elucene;
 import java.io.File;
 
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -23,20 +24,26 @@ public class ELuceneService {
     
 	Logger logger = Logger.getLogger(ELuceneService.class);
 
+	@Autowired
+	IndexingModule indexingModule;
+	
+	@Autowired
+	SearchingModule searchingModule;
+	
 	public ELuceneService() {
-		String storageLocation = "";
-		String OS = System.getProperty("os.name");
-		if(OS.startsWith("Mac")){
-			storageLocation = "/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/";
-		}
-		else if(OS.startsWith("Windows")){
-			storageLocation = "C:/tests/sesame/";
-		}
-		else if(OS.startsWith("Linux")){
-			storageLocation = "/opt/storage/luceneStorage/";
-		}
-		IndexingModule.setIndexDirectory(storageLocation);
-		SearchingModule.setIndexDirectory(storageLocation);
+//		String storageLocation = "";
+//		String OS = System.getProperty("os.name");
+//		if(OS.startsWith("Mac")){
+//			storageLocation = "/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/";
+//		}
+//		else if(OS.startsWith("Windows")){
+//			storageLocation = "C:/tests/sesame/";
+//		}
+//		else if(OS.startsWith("Linux")){
+//			storageLocation = "/opt/storage/luceneStorage/";
+//		}
+//		IndexingModule.setIndexDirectory(storageLocation);
+//		SearchingModule.setIndexDirectory(storageLocation);
 	}
 	
 	/**
@@ -59,9 +66,9 @@ public class ELuceneService {
         		if(!indexPath.endsWith(File.separator)){
         			indexPath += File.separator;
         		}
-        		SearchingModule.setIndexDirectory(indexPath);
+        		searchingModule.setIndexDirectory(indexPath);
         	}
-        	Model nifOutputModel = SearchingModule.search(index, sFields, sAnalyzers, queryType, text, languageParam, hitsToReturn);
+        	Model nifOutputModel = searchingModule.search(index, sFields, sAnalyzers, queryType, text, languageParam, hitsToReturn);
             return nifOutputModel;
         } catch (Exception e) {
         	throw LoggedExceptions.generateLoggedExternalServiceFailedException(logger, e.getMessage());
@@ -90,14 +97,14 @@ public class ELuceneService {
         	throw LoggedExceptions.generateLoggedBadRequestException(logger, msg);
     	}
     	try {
-        	IndexingModule.setIndexCreate(true);
+        	indexingModule.setIndexCreate(true);
         	if(indexPath!=null && !indexPath.equalsIgnoreCase("")){
         		if(!indexPath.endsWith(File.separator)){
         			indexPath += File.separator;
         		}
-        		IndexingModule.setIndexDirectory(indexPath);
+        		indexingModule.setIndexDirectory(indexPath);
         	}
-			Model nifModelOutput = IndexingModule.indexModel(inModel, index, sFields, sAnalyzers, languageParam);
+			Model nifModelOutput = indexingModule.indexModel(inModel, index, sFields, sAnalyzers, languageParam);
         	if(nifModelOutput!=null){
                 return nifModelOutput;
         	}
