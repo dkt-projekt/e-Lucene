@@ -36,9 +36,6 @@ public class SemicolonTokenizer extends Tokenizer {
      */
     @Override
     public boolean incrementToken() throws IOException {
-
-    	
-    	
 //    	System.out.println("We come inside the NERTokenizer metho...");
         // Clear anything that is already saved in this.charTermAttribute
         this.charTermAttribute.setEmpty();

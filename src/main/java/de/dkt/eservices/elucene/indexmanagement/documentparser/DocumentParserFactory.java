@@ -1,6 +1,6 @@
 package de.dkt.eservices.elucene.indexmanagement.documentparser;
 
-import eu.freme.common.exception.ExternalServiceFailedException;
+import de.dkt.eservices.elucene.exceptions.UnSupportedDocumentParserFormatException;
 
 /**
  * @author jmschnei
@@ -8,10 +8,10 @@ import eu.freme.common.exception.ExternalServiceFailedException;
  */
 public class DocumentParserFactory {
 
-	public static IDocumentParser getDocumentParser(String type) throws ExternalServiceFailedException{
+	public static IDocumentParser getDocumentParser(String type) 
+			throws UnSupportedDocumentParserFormatException{
 		if(type==null || type.equals("")){
-			//System.out.println("ERROR: type argument is null or empty");
-			throw new ExternalServiceFailedException("ERROR: type argument is null or empty");
+			throw new UnSupportedDocumentParserFormatException();
 		}
 		
 //		if(type.equalsIgnoreCase("xml")){
@@ -35,7 +35,6 @@ public class DocumentParserFactory {
 //		if(type.equalsIgnoreCase("doc")){
 //		return DOCDocumentParser.parseDocument(path);
 //	}
-		System.out.println("ERROR: Unsupported document type");
-		return null;
+		throw new UnSupportedDocumentParserFormatException();
 	}
 }

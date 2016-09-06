@@ -7,5 +7,7 @@
 	http://www.springframework.org/schema/context
 	http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<context:component-scan base-package="de.dkt.eservices.elucene" />
+	<context:component-scan base-package="de.dkt.eservices.persistence.repository" />
+	<bean name="luceneConfig" class="de.dkt.eservices.elucene.LuceneConfig"/>
+	
 </beans>

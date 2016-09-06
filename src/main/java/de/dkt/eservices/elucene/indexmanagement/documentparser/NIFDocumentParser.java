@@ -19,7 +19,7 @@ import de.dkt.common.niftools.ITSRDF;
 import de.dkt.common.niftools.NIF;
 import de.dkt.common.niftools.NIFReader;
 import de.dkt.common.niftools.TIME;
-import de.dkt.eservices.elucene.ELuceneServiceStandAlone;
+import de.dkt.eservices.elucene.ELuceneRestController;
 import eu.freme.common.conversion.rdf.RDFConstants.RDFSerialization;
 import eu.freme.common.exception.BadRequestException;
 import eu.freme.common.exception.ExternalServiceFailedException;
@@ -31,7 +31,7 @@ import eu.freme.common.exception.ExternalServiceFailedException;
  */
 public class NIFDocumentParser implements IDocumentParser{
 
-	Logger logger = Logger.getLogger(ELuceneServiceStandAlone.class);
+	Logger logger = Logger.getLogger(ELuceneRestController.class);
 
 	public NIFDocumentParser() {
 	}
@@ -63,15 +63,10 @@ public class NIFDocumentParser implements IDocumentParser{
 		try{
 			Model model = null;
 			try{
-				model = NIFReader.extractModelFromFormatString(content, RDFSerialization.RDF_XML);
+				model = NIFReader.extractModelFromFormatString(content, RDFSerialization.TURTLE);
 			}
 			catch(Exception e){
-				try{
-					model = NIFReader.extractModelFromFormatString(content, RDFSerialization.TURTLE);
-				}
-				catch(Exception e2){
-					throw new BadRequestException("String format not allowed.");
-				}
+				throw new BadRequestException("Input String format not supported: only turtle is supported.");
 			}
 			return parseDocumentFromModel(model, fields);
 		}
@@ -110,6 +105,7 @@ public class NIFDocumentParser implements IDocumentParser{
 							}
 						}
 					}
+					text = (text.length()>0)?text.substring(1):"";
 					doc.add(new TextField(fieldString, text, Store.YES));
 				}
 				else if(fieldString.equalsIgnoreCase("links")){
@@ -126,6 +122,7 @@ public class NIFDocumentParser implements IDocumentParser{
 							}
 						}
 					}
+					text = (text.length()>0)?text.substring(1):"";
 					doc.add(new TextField(fieldString, text, Store.YES));
 				}
 				else if(fieldString.equalsIgnoreCase("temporal")){
@@ -148,6 +145,7 @@ public class NIFDocumentParser implements IDocumentParser{
 							text = text + ";" + initialTime+"_"+finalTime;
 						}
 					}
+					text = (text.length()>0)?text.substring(1):"";
 					doc.add(new TextField(fieldString, text, Store.YES));
 				}
 				else if(fieldString.equalsIgnoreCase("nifContent")){

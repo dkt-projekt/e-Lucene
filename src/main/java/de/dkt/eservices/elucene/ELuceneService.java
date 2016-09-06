@@ -1,19 +1,22 @@
 package de.dkt.eservices.elucene;
 
-import java.io.File;
+import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.hp.hpl.jena.rdf.model.Model;
 
 import de.dkt.common.exceptions.LoggedExceptions;
-import de.dkt.common.tools.ParameterChecker;
-import de.dkt.eservices.elucene.indexmanagement.IndexingModule;
-import de.dkt.eservices.elucene.indexmanagement.SearchingModule;
+import de.dkt.common.niftools.NIFReader;
+import de.dkt.eservices.elucene.indexmanagement.LuceneModule;
+import eu.freme.common.conversion.rdf.RDFConstants.RDFSerialization;
 import eu.freme.common.exception.BadRequestException;
 import eu.freme.common.exception.ExternalServiceFailedException;
+import eu.freme.common.persistence.dao.IndexDAO;
+import eu.freme.common.persistence.repository.IndexRepository;
 
 /**
  * @author Julian Moreno Schneider julian.moreno_schneider@dfki.de
@@ -24,56 +27,74 @@ public class ELuceneService {
     
 	Logger logger = Logger.getLogger(ELuceneService.class);
 
+	LuceneModule luceneModule;
+
 	@Autowired
-	IndexingModule indexingModule;
-	
+	private IndexRepository indexRepository;
+
 	@Autowired
-	SearchingModule searchingModule;
-	
+	private IndexDAO indexDAO;
+
+//	@Value("${luceneIndexPath}")
+	@Value("${dkt.storage.data-dir:lucene/}")
+	private String luceneIndexPath;
+
 	public ELuceneService() {
-//		String storageLocation = "";
-//		String OS = System.getProperty("os.name");
-//		if(OS.startsWith("Mac")){
-//			storageLocation = "/Users/jumo04/Documents/DFKI/DKT/dkt-test/testTimelining/luceneStorage/";
-//		}
-//		else if(OS.startsWith("Windows")){
-//			storageLocation = "C:/tests/sesame/";
-//		}
-//		else if(OS.startsWith("Linux")){
-//			storageLocation = "/opt/storage/luceneStorage/";
-//		}
-//		IndexingModule.setIndexDirectory(storageLocation);
-//		SearchingModule.setIndexDirectory(storageLocation);
 	}
-	
-	/**
-	 * @param text
-	 * @param languageParam
-	 * @param index
-	 * @return
-	 * @throws ExternalServiceFailedException
-	 * @throws BadRequestException
-	 */
-	public Model retrieveDocuments(String queryType, String text, String languageParam, String index, String indexPath, String sFields, String sAnalyzers,int hitsToReturn)//, String prefix, String dataset, int numLinks, ArrayList<String> rMode, String informat)
-            throws ExternalServiceFailedException, BadRequestException {
-    	ParameterChecker.checkNotNullOrEmpty(languageParam, "language", logger);
-    	ParameterChecker.checkNotNullOrEmpty(sFields, "fields", logger);
-    	ParameterChecker.checkNotNullOrEmpty(sAnalyzers, "analyzers", logger);
-    	ParameterChecker.checkNotNullOrEmpty(index, "index", logger);
-    	ParameterChecker.checkNotNullOrEmpty(text, "document path", logger);
-        try {
-        	if(indexPath!=null && !indexPath.equalsIgnoreCase("")){
-        		if(!indexPath.endsWith(File.separator)){
-        			indexPath += File.separator;
-        		}
-        		searchingModule.setIndexDirectory(indexPath);
-        	}
-        	Model nifOutputModel = searchingModule.search(index, sFields, sAnalyzers, queryType, text, languageParam, hitsToReturn);
-            return nifOutputModel;
-        } catch (Exception e) {
-        	throw LoggedExceptions.generateLoggedExternalServiceFailedException(logger, e.getMessage());
-        }
-    }
+
+	@PostConstruct
+	public void createLuceneModule(){
+		luceneModule = LuceneModule.getInstance(luceneIndexPath,indexRepository,indexDAO);
+	}
+
+	public String createIndex(String indexId, String language,String sFields,String sAnalyzers, boolean overwrite) throws Exception {
+		try {
+			String nifResult = luceneModule.createIndex(indexId, language, sFields, sAnalyzers, overwrite);
+			return nifResult;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+		} 
+	}
+
+	public String deleteIndex(String indexId) throws ExternalServiceFailedException, BadRequestException {
+		try {
+			String nifResult = luceneModule.deleteIndex(indexId);
+			return nifResult;
+		} catch (BadRequestException e) {
+			logger.error(e.getMessage());
+			throw e;
+		} 
+	}
+
+	public void deleteDocument(String indexId, String documentId) throws Exception {
+		try {
+			luceneModule.deleteDocument(documentId, indexId);
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+		} 
+	}
+
+	public Model deleteAndRetrieveDocument(String indexId, String documentId) throws Exception {
+		try {
+			Model model = luceneModule.deleteAndRetrieveDocument(documentId, indexId);
+			return model;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw e;
+		} 
+	}
+
+	public String listIndexes() throws ExternalServiceFailedException, BadRequestException {
+		try {
+			String nifResult = luceneModule.listIndexes();
+			return nifResult;
+		} catch (BadRequestException e) {
+			logger.error(e.getMessage());
+			throw e;
+		} 
+	}
 
     /**
      * @param contentOrPath
@@ -86,25 +107,14 @@ public class ELuceneService {
      * @throws ExternalServiceFailedException
      * @throws BadRequestException
      */
-    public Model indexDocument(Model inModel, String languageParam,String sFields,String sAnalyzers,String index,String indexPath)
+    public Model addDocument(Model inModel, String index)
             throws ExternalServiceFailedException, BadRequestException {
-    	ParameterChecker.checkNotNullOrEmpty(languageParam, "language", logger);
-    	ParameterChecker.checkNotNullOrEmpty(sFields, "fields", logger);
-    	ParameterChecker.checkNotNullOrEmpty(sAnalyzers, "analyzers", logger);
-    	ParameterChecker.checkNotNullOrEmpty(index, "index", logger);
     	if(inModel==null){
     		String msg = "Input model is NULL";
         	throw LoggedExceptions.generateLoggedBadRequestException(logger, msg);
     	}
     	try {
-        	indexingModule.setIndexCreate(true);
-        	if(indexPath!=null && !indexPath.equalsIgnoreCase("")){
-        		if(!indexPath.endsWith(File.separator)){
-        			indexPath += File.separator;
-        		}
-        		indexingModule.setIndexDirectory(indexPath);
-        	}
-			Model nifModelOutput = indexingModule.indexModel(inModel, index, sFields, sAnalyzers, languageParam);
+			Model nifModelOutput = luceneModule.addDocument(inModel, index);
         	if(nifModelOutput!=null){
                 return nifModelOutput;
         	}
@@ -118,38 +128,22 @@ public class ELuceneService {
         }
     }
 
-//	public String getRepositoryInformation(String repositoryName) throws ExternalServiceFailedException {
-//		if(repositoryName==null || repositoryName.equals("")){
-//			logger.error("No repository name given.");
-//			throw new BadRequestException("No repository name given.");
-//		}
-//		try{
-//			IndexesRepository ir = new IndexesRepository(repositoryName);
-//			return ir.getListOfIndexes();
-//		}
-//		catch(Exception e){
-//			logger.error("ERROR retrieveing information form repository "+repositoryName);
-//			throw new ExternalServiceFailedException("ERROR retrieveing information form repository "+repositoryName);
-//		}
-//	}
-//
-//	public String getIndexInformation(String repositoryName, String indexName) throws ExternalServiceFailedException,BadRequestException {
-//		if(repositoryName==null || repositoryName.equals("")){
-//			logger.error("No repository name given.");
-//			throw new BadRequestException("No repository name given.");
-//		}
-//		if(indexName==null || indexName.equals("")){
-//			logger.error("No index name given.");
-//			throw new BadRequestException("No index name given.");
-//		}
-//		try{
-//			IndexesRepository ir = new IndexesRepository(repositoryName);
-//			return ir.getIndexInformation(indexName);
-//		}
-//		catch(Exception e){
-//			logger.error("ERROR retrieveing information form repository "+repositoryName);
-//			throw new ExternalServiceFailedException("ERROR retrieveing information form repository "+repositoryName);
-//		}
-//	}
+	/**
+	 * @param text
+	 * @param languageParam
+	 * @param index
+	 * @return
+	 * @throws ExternalServiceFailedException
+	 * @throws BadRequestException
+	 */
+	public Model retrieveDocuments(String indexId, String queryText, int hitsToReturn) throws Exception {
+        try {
+        	Model nifOutputModel = luceneModule.search(indexId, queryText, hitsToReturn);
+            return nifOutputModel;
+        } catch (Exception e) {
+        	throw LoggedExceptions.generateLoggedExternalServiceFailedException(logger, e.getMessage());
+        }
+    }
+
 	
 }

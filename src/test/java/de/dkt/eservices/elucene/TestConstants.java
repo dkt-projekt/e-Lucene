@@ -15,7 +15,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"5 September\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"494\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"505\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360905000000_19360906000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=0,805>\n" +
@@ -32,7 +32,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"July\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"399\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"403\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360701000000_19360702000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=407,416>\n" +
@@ -40,7 +40,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"September\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"407\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"416\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360901000000_19360902000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=146,151>\n" +
@@ -48,7 +48,7 @@ public class TestConstants {
 			"        nif:anchorOf          \"South\"^^xsd:string ;\n" +
 			"        nif:beginIndex        \"146\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"151\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+			"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Southern_United_States> .\n" +
 			"\n" +
@@ -57,7 +57,7 @@ public class TestConstants {
 			"        nif:anchorOf          \"Madrid\"^^xsd:string ;\n" +
 			"        nif:beginIndex        \"636\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"642\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+			"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"40.4_-3.6833333333333336\"^^xsd:string ;\n" +
 			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Madrid> .\n" +
@@ -67,7 +67,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"1936\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"0\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"4\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360101000000_19370101000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=156,163>\n" +
@@ -75,7 +75,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"21 July\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"156\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"163\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360721000000_19360722000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=277,282>\n" +
@@ -83,7 +83,7 @@ public class TestConstants {
 			"        nif:anchorOf          \"Spain\"^^xsd:string ;\n" +
 			"        nif:beginIndex        \"277\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"282\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+			"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.0_-4.0\"^^xsd:string ;\n" +
 			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Spain> .\n" +
@@ -93,7 +93,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"end of September\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"788\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"804\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360920000000_19360930000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=598,610>\n" +
@@ -101,7 +101,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"13 September\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"598\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"610\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360913000000_19360914000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=58,65>\n" +
@@ -109,7 +109,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"20 July\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"58\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"65\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360720000000_19360721000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=254,260>\n" +
@@ -117,7 +117,7 @@ public class TestConstants {
 			"        nif:anchorOf          \"Ferrol\"^^xsd:string ;\n" +
 			"        nif:beginIndex        \"254\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"260\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+			"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.46666666666667_-8.25\"^^xsd:string ;\n" +
 			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Ferrol,_Galicia> .\n" +
@@ -127,7 +127,7 @@ public class TestConstants {
 			"        nif:anchorOf          \"Bilbao\"^^xsd:string ;\n" +
 			"        nif:beginIndex        \"704\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"710\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+			"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.25694444444444_-2.923611111111111\"^^xsd:string ;\n" +
 			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Bilbao> .\n" +
@@ -137,7 +137,7 @@ public class TestConstants {
 			"        nif:anchorOf          \"Irun\"^^xsd:string ;\n" +
 			"        nif:beginIndex        \"543\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"547\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+			"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.33781388888889_-1.788811111111111\"^^xsd:string ;\n" +
 			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Irun> .\n" +
@@ -154,7 +154,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"5 September\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"494\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"505\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360905000000_19360906000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=0,805>\n" +
@@ -174,7 +174,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"July\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"399\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"403\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360701000000_19360702000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=407,416>\n" +
@@ -182,7 +182,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"September\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"407\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"416\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360901000000_19360902000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=146,151>\n" +
@@ -190,7 +190,7 @@ public class TestConstants {
 			"        nif:anchorOf          \"South\"^^xsd:string ;\n" +
 			"        nif:beginIndex        \"146\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"151\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+			"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Southern_United_States> .\n" +
 			"\n" +
@@ -199,7 +199,7 @@ public class TestConstants {
 			"        nif:anchorOf          \"Madrid\"^^xsd:string ;\n" +
 			"        nif:beginIndex        \"636\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"642\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+			"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"40.4_-3.6833333333333336\"^^xsd:string ;\n" +
 			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Madrid> .\n" +
@@ -209,7 +209,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"1936\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"0\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"4\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360101000000_19370101000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=156,163>\n" +
@@ -217,7 +217,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"21 July\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"156\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"163\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360721000000_19360722000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=277,282>\n" +
@@ -225,7 +225,7 @@ public class TestConstants {
 			"        nif:anchorOf          \"Spain\"^^xsd:string ;\n" +
 			"        nif:beginIndex        \"277\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"282\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+			"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.0_-4.0\"^^xsd:string ;\n" +
 			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Spain> .\n" +
@@ -235,7 +235,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"end of September\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"788\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"804\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360920000000_19360930000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=598,610>\n" +
@@ -243,7 +243,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"13 September\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"598\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"610\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360913000000_19360914000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=58,65>\n" +
@@ -251,7 +251,7 @@ public class TestConstants {
 			"        nif:anchorOf       \"20 July\"^^xsd:string ;\n" +
 			"        nif:beginIndex     \"58\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex       \"65\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+			"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 			"        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360720000000_19360721000000> .\n" +
 			"\n" +
 			"<http://dkt.dfki.de/examples/#char=254,260>\n" +
@@ -259,7 +259,7 @@ public class TestConstants {
 			"        nif:anchorOf          \"Ferrol\"^^xsd:string ;\n" +
 			"        nif:beginIndex        \"254\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"260\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+			"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.46666666666667_-8.25\"^^xsd:string ;\n" +
 			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Ferrol,_Galicia> .\n" +
@@ -269,7 +269,7 @@ public class TestConstants {
 			"        nif:anchorOf          \"Bilbao\"^^xsd:string ;\n" +
 			"        nif:beginIndex        \"704\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"710\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+			"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.25694444444444_-2.923611111111111\"^^xsd:string ;\n" +
 			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Bilbao> .\n" +
@@ -279,7 +279,7 @@ public class TestConstants {
 			"        nif:anchorOf          \"Irun\"^^xsd:string ;\n" +
 			"        nif:beginIndex        \"543\"^^xsd:nonNegativeInteger ;\n" +
 			"        nif:endIndex          \"547\"^^xsd:nonNegativeInteger ;\n" +
-			"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+			"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 			"        nif:geoPoint          \"43.33781388888889_-1.788811111111111\"^^xsd:string ;\n" +
 			"        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 			"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Irun> .\n" +
@@ -296,7 +296,7 @@ public class TestConstants {
 "        nif:anchorOf       \"5 September\"^^xsd:string ;\n" +
 "        nif:beginIndex     \"494\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex       \"505\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 "        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360905000000_19360906000000> .\n" +
 "\n" +
 "<http://dkt.dfki.de/examples/#char=0,805>\n" +
@@ -315,7 +315,7 @@ public class TestConstants {
 "        nif:anchorOf       \"July\"^^xsd:string ;\n" +
 "        nif:beginIndex     \"399\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex       \"403\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 "        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360701000000_19360702000000> .\n" +
 "\n" +
 "<http://dkt.dfki.de/examples/#char=407,416>\n" +
@@ -323,7 +323,7 @@ public class TestConstants {
 "        nif:anchorOf       \"September\"^^xsd:string ;\n" +
 "        nif:beginIndex     \"407\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex       \"416\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 "        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360901000000_19360902000000> .\n" +
 "\n" +
 "<http://dkt.dfki.de/examples/#char=146,151>\n" +
@@ -331,7 +331,7 @@ public class TestConstants {
 "        nif:anchorOf          \"South\"^^xsd:string ;\n" +
 "        nif:beginIndex        \"146\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex          \"151\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 "        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 "        itsrdf:taIdentRef     <http://dbpedia.org/resource/Southern_United_States> .\n" +
 "\n" +
@@ -340,7 +340,7 @@ public class TestConstants {
 "        nif:anchorOf          \"Madrid\"^^xsd:string ;\n" +
 "        nif:beginIndex        \"636\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex          \"642\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 "        nif:geoPoint          \"40.4_-3.6833333333333336\"^^xsd:string ;\n" +
 "        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 "        itsrdf:taIdentRef     <http://dbpedia.org/resource/Madrid> .\n" +
@@ -350,7 +350,7 @@ public class TestConstants {
 "        nif:anchorOf       \"1936\"^^xsd:string ;\n" +
 "        nif:beginIndex     \"0\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex       \"4\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 "        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360101000000_19370101000000> .\n" +
 "\n" +
 "<http://dkt.dfki.de/examples/#char=156,163>\n" +
@@ -358,7 +358,7 @@ public class TestConstants {
 "        nif:anchorOf       \"21 July\"^^xsd:string ;\n" +
 "        nif:beginIndex     \"156\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex       \"163\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 "        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360721000000_19360722000000> .\n" +
 "\n" +
 "<http://dkt.dfki.de/examples/#char=277,282>\n" +
@@ -366,7 +366,7 @@ public class TestConstants {
 "        nif:anchorOf          \"Spain\"^^xsd:string ;\n" +
 "        nif:beginIndex        \"277\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex          \"282\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 "        nif:geoPoint          \"43.0_-4.0\"^^xsd:string ;\n" +
 "        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 "        itsrdf:taIdentRef     <http://dbpedia.org/resource/Spain> .\n" +
@@ -376,7 +376,7 @@ public class TestConstants {
 "        nif:anchorOf       \"20 July\"^^xsd:string ;\n" +
 "        nif:beginIndex     \"58\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex       \"65\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 "        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360720000000_19360721000000> .\n" +
 "\n" +
 "<http://dkt.dfki.de/examples/#char=788,804>\n" +
@@ -384,7 +384,7 @@ public class TestConstants {
 "        nif:anchorOf       \"end of September\"^^xsd:string ;\n" +
 "        nif:beginIndex     \"788\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex       \"804\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 "        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360920000000_19360930000000> .\n" +
 "\n" +
 "<http://dkt.dfki.de/examples/#char=598,610>\n" +
@@ -392,7 +392,7 @@ public class TestConstants {
 "        nif:anchorOf       \"13 September\"^^xsd:string ;\n" +
 "        nif:beginIndex     \"598\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex       \"610\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
+"        itsrdf:taClassRef         <http://dkt.dfki.de/ontologies/nif#date> ;\n" +
 "        itsrdf:taIdentRef  <http://dkt.dfki.de/ontologies/nif#date=19360913000000_19360914000000> .\n" +
 "\n" +
 "<http://dkt.dfki.de/examples/#char=254,260>\n" +
@@ -400,7 +400,7 @@ public class TestConstants {
 "        nif:anchorOf          \"Ferrol\"^^xsd:string ;\n" +
 "        nif:beginIndex        \"254\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex          \"260\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 "        nif:geoPoint          \"43.46666666666667_-8.25\"^^xsd:string ;\n" +
 "        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 "        itsrdf:taIdentRef     <http://dbpedia.org/resource/Ferrol,_Galicia> .\n" +
@@ -410,7 +410,7 @@ public class TestConstants {
 "        nif:anchorOf          \"Bilbao\"^^xsd:string ;\n" +
 "        nif:beginIndex        \"704\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex          \"710\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 "        nif:geoPoint          \"43.25694444444444_-2.923611111111111\"^^xsd:string ;\n" +
 "        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 "        itsrdf:taIdentRef     <http://dbpedia.org/resource/Bilbao> .\n" +
@@ -420,7 +420,7 @@ public class TestConstants {
 "        nif:anchorOf          \"Irun\"^^xsd:string ;\n" +
 "        nif:beginIndex        \"543\"^^xsd:nonNegativeInteger ;\n" +
 "        nif:endIndex          \"547\"^^xsd:nonNegativeInteger ;\n" +
-"        nif:entity            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
+"        itsrdf:taClassRef            <http://dkt.dfki.de/ontologies/nif#location> ;\n" +
 "        nif:geoPoint          \"43.33781388888889_-1.788811111111111\"^^xsd:string ;\n" +
 "        nif:referenceContext  <http://dkt.dfki.de/examples/#char=0,805> ;\n" +
 "        itsrdf:taIdentRef     <http://dbpedia.org/resource/Irun> .\n" +
@@ -447,4 +447,44 @@ public class TestConstants {
 			+ "who then advanced toward their capital, Bilbao. The Republican militias on the border of "
 			+ "Viscaya halted these forces at the end of September.\\n\"}},\"numberResults\":1,"
 			+ "\"querytext\":\"content:madrid\"}}";
+	
+	public static String inputGermanFile = "@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .\n" + 
+"@prefix itsrdf: <http://www.w3.org/2005/11/its/rdf#> .\n" + 
+"@prefix nif:   <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#> .\n" + 
+"\n" + 
+"<http://dkt.dfki.de/doc1#char=13,19>\n" + 
+"        a                     nif:RFC5147String , nif:Phrase , nif:Word , nif:String ;\n" + 
+"        nif:anchorOf          \"Berlin\"^^xsd:string ;\n" + 
+"        nif:beginIndex        \"13\"^^xsd:int ;\n" + 
+"        nif:endIndex          \"19\"^^xsd:int ;\n" + 
+"        nif:referenceContext  <http://freme-project.eu/#char=0,48> ;\n" + 
+"        itsrdf:taClassRef     <http://dbpedia.org/ontology/AdministrativeRegion> , <http://nerd.eurecom.fr/ontology#Location> , <http://dbpedia.org/ontology/PopulatedPlace> , <http://dbpedia.org/ontology/Location> , <http://dbpedia.org/ontology/Place> , <http://dbpedia.org/ontology/Region> ;\n" + 
+"        itsrdf:taConfidence   \"0.9789499862324603\"^^xsd:double ;\n" + 
+"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Berlin> .\n" + 
+"\n" + 
+"<http://dkt.dfki.de/doc1#char=0,48>\n" + 
+"        a               nif:String , nif:Context , nif:RFC5147String ;\n" + 
+"        nif:beginIndex  \"0\"^^xsd:int ;\n" + 
+"        nif:endIndex    \"48\"^^xsd:int ;\n" + 
+"        nif:isString    \"Wilkommen in Berlin, der Stadt von Bäre un Lüger\"^^xsd:string .\n";
+
+	public static String inputGermanFile2 = "@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .\n" + 
+"@prefix itsrdf: <http://www.w3.org/2005/11/its/rdf#> .\n" + 
+"@prefix nif:   <http://persistence.uni-leipzig.org/nlp2rdf/ontologies/nif-core#> .\n" + 
+"\n" + 
+"<http://dkt.dfki.de/doc2#char=13,19>\n" + 
+"        a                     nif:RFC5147String , nif:Phrase , nif:Word , nif:String ;\n" + 
+"        nif:anchorOf          \"Berlin\"^^xsd:string ;\n" + 
+"        nif:beginIndex        \"13\"^^xsd:int ;\n" + 
+"        nif:endIndex          \"19\"^^xsd:int ;\n" + 
+"        nif:referenceContext  <http://freme-project.eu/#char=0,48> ;\n" + 
+"        itsrdf:taClassRef     <http://dbpedia.org/ontology/AdministrativeRegion> , <http://nerd.eurecom.fr/ontology#Location> , <http://dbpedia.org/ontology/PopulatedPlace> , <http://dbpedia.org/ontology/Location> , <http://dbpedia.org/ontology/Place> , <http://dbpedia.org/ontology/Region> ;\n" + 
+"        itsrdf:taConfidence   \"0.9789499862324603\"^^xsd:double ;\n" + 
+"        itsrdf:taIdentRef     <http://dbpedia.org/resource/Berlin> .\n" + 
+"\n" + 
+"<http://dkt.dfki.de/doc2#char=0,48>\n" + 
+"        a               nif:String , nif:Context , nif:RFC5147String ;\n" + 
+"        nif:beginIndex  \"0\"^^xsd:int ;\n" + 
+"        nif:endIndex    \"48\"^^xsd:int ;\n" + 
+"        nif:isString    \"Wilkommen in Berlin, der Stadt von Bäre un Lüger\"^^xsd:string .\n";
 }

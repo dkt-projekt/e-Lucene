@@ -3,6 +3,8 @@ package de.dkt.eservices.elucene.indexmanagement.queryparser;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -12,10 +14,23 @@ import org.apache.lucene.search.Query;
 import com.hp.hpl.jena.rdf.model.Model;
 
 import de.dkt.common.niftools.NIFReader;
+import de.dkt.eservices.elucene.exceptions.QueryTypeNotSupportedException;
 import de.dkt.eservices.elucene.indexmanagement.analyzer.AnalyzerFactory;
 import eu.freme.common.exception.ExternalServiceFailedException;
 
-public class OwnQueryParser {
+public class OwnQueryParser implements IQueryParser{
+	
+	public static Query parseDocumentIdQuery(String documentId){
+		try{
+			QueryParser parser1 = new QueryParser("documentId", new WhitespaceAnalyzer());
+			Query query1 = parser1.parse(scapeStringForLuceneQuery(documentId));
+			return query1;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			throw new ExternalServiceFailedException(e.getMessage());
+		}
+	}
 	
 	public static Query parseQuery(String queryContent, String[] fields, String [] analyzers, String language){
 		Builder buil = new Builder();
@@ -40,7 +55,8 @@ public class OwnQueryParser {
 		return booleanQuery;
 	}
 
-	public static Query parseComplexQuery(String queryType, String queryContent, String[] fields, String [] analyzers, String language){
+	public static Query parseComplexQuery(String queryType, String queryContent, String[] fields, String [] analyzers, String language)
+			throws QueryTypeNotSupportedException{
 		Builder buil = new Builder();
 		try{
 			if(queryType.equalsIgnoreCase("nif")){
@@ -106,8 +122,13 @@ public class OwnQueryParser {
 					}
 				}
 			}
+			else{
+				throw new QueryTypeNotSupportedException();
+			}
 		}
-		catch(Exception e){
+		catch(QueryTypeNotSupportedException e){
+			throw e;
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ExternalServiceFailedException(e.getMessage());
 		}
