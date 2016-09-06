@@ -4,32 +4,86 @@ The e-Lucene module performs full-text storage and retrieval of documents. It is
 
 **Please note** that in order to install and use this module, the code expects a folder for storage that has to be created manually. The location of this folder must be `/opt/storage/luceneStorage` and full reading and writing rights have to be assigned to it (e.g. `chmod 775 /opt/storage/luceneStorage`).
 
-## Document Storage
-
-The Storage of documents endpoint allows to store nif or plain text documents. 
+## List Indexes
+Allows to check the available indexes.
 
 ### Endpoint
+[GET] http://api.digitale-kuratierung.de/api/e-lucene/indexes
 
-http://api.digitale-kuratierung.de/api/e-lucene/indexDocument
+### Input
+Nothing.
+
+### Output
+A json string containing information about the available indexes.
+
+### Example
+Example cURL get for getting the list of available indexes:
+
+```
+curl "http://dev.digitale-kuratierung.de/api/e-lucene/indexes"
+```
+
+## Create an Index
+Allows to creation of an index in order to, later, add and index documents with it.
+
+### Endpoint
+[POST] http://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}
+
+### Input
+`indexId`: name for the lucene index that is implicitly given in the URL.
+`language`: language of the documents that will be included in the index.
+`fields`: comma  separated list of fields that will be created in the index. This parameter is directly related to the type of documents that are going to be indexed. For simplicity, the value `all` can be introduced and then the system will used all the possible fields for eveery type of document.
+`analyzers`: comma  separated list of analyzers which will be applied to every field. The number of element in the fields and analyzers list must be the same (exception thrown if it is different). The list of available analyzers are: `Standard` or `WhiteSpace`.
+`overwrite`: boolean value that defines if the index should be overwriten or deleted and new created in case of previous existence of an index with the same name.
+
+### Output
+A string specifying if the index has been correctly created or if there was an error ocurring.
+
+### Example
+
+Example cURL post for using the `document storage`:
+
+```
+curl -X POST "http://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101?language=en&fields=all&analyzers=standard"
+```
+
+## Delete an Index
+Allows to deletion of an index.
+
+### Endpoint
+[DELETE] http://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}
+
+### Input
+`indexId`: name for the lucene index that is implicitly given in the URL.
+
+### Output
+A string specifying if the index has been correctly deleted or if there was an error ocurring.
+
+### Example
+Example cURL DELETE request for deleting index `index101`:
+
+```
+curl -X DELETE "http://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101"
+```
+
+## Add a Document to an Index
+Allows the storage of documents into the specified index.
+
+### Endpoint
+[POST] http://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}/documents
 
 ### Input
 The API conforms to the general NIF API specifications. For more details, see: http://persistence.uni-leipzig.org/nlp2rdf/specification/api.html
 In addition to the input, informat and outformat parameters, the following parameters have to be set to perform Semantic Information Storage:  
 
-`indexName`: name of the sesame (triple storage) where the information must be stored.
-
-`language`: 
-
-`fields`: 
-
-`analyzers`: 
+`indexId`: name for the lucene index that is implicitly given in the URL.
+`input` or `body` : the NIF content of the file to be indexed.
 
 ### Output
-A nif model containing information tot he index where the document has been stored.
+A nif model containing information of the index where the document has been stored.
 
 ### Example
-
-Example cURL post for using the `document storage`:
+Example cURL POST for using the `document storage`:
 
 ```
 curl -X POST -d '@prefix dktnif: <http://dkt.dfki.de/ontologies/nif#> .
@@ -49,41 +103,49 @@ curl -X POST -d '@prefix dktnif: <http://dkt.dfki.de/ontologies/nif#> .
         a               nif:RFC5147String , nif:String , nif:Context ;
         nif:beginIndex  "0"^^xsd:nonNegativeInteger ;
         nif:endIndex    "26"^^xsd:nonNegativeInteger ;
-        nif:isString    "Welcome to Berlin in 2016."^^xsd:string .' "http://dev.digitale-kuratierung.de/api/e-lucene/indexDocument?indexName=lucene2&language=en&fields=all&analyzers=standard"
+        nif:isString    "Welcome to Berlin in 2016."^^xsd:string .' "http://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101/documents?language=en&fields=all&analyzers=standard"
 ```
 
-## Document Retrieval
+## Delete a Document from an Index
+Allows the deletion of documents from the specified index.
 
+### Endpoint
+[DELETE] http://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}/documents
+
+### Input
+
+`indexId`: name for the lucene index that is implicitly given in the URL.
+`documentId`: the documentId referes to the documentURI that it had during indexing time.
+
+### Output
+A string specifying if the document has been correctly deleted or if there was an error ocurring.
+
+### Example
+Example cURL DELETE for deleting the document `http://dkt.dfki.de/documents/#char=0,26`:
+
+```
+curl -X DELETE "http://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101/documents?documentId=http%3A%2F%2Fdkt.dfki.de%2Fdocuments%2F%23char%3D0%2C26"
+```
+
+## Retrieval of documents
 The Retrieval of documents endpoint retrieves documents based on a plain text query. 
 
 ### Endpoint
-
-http://api.digitale-kuratierung.de/api/e-lucene/retrieveDocuments
+[GET] http://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}/documents
 
 ### Input
-The API conforms to the general NIF API specifications. For more details, see: http://persistence.uni-leipzig.org/nlp2rdf/specification/api.html
-In addition to the input, informat and outformat parameters, the following parameters have to be set to perform Semantic Information Retrieval:  
 
-`indexName`: name of the lucene index where the information must be retrieved from.
-
-`inputDataType`: parameter that specifies the format in which the query is provided to the service. It can have four different values: `NIF`, `entity`, `sparql` or `triple`.
-
-`language`: language of the query. For now there are three available options: `en`, `es` or `de`.
-
-`fields`: comma separated list of fields where the query should search on.
-
-`analyzers`: comma separated list of analyzers that should be used for every fields. 
-
-NOTE: the number of elements in the `fields` and `analyzers` parameters must be the same.
-
+`indexId`: name for the lucene index that is implicitly given in the URL.
+`documentId`: the documentId referes to the documentURI that it had during indexing time.
 `hits`: integer defining the number of resutls that should be retrieved.
+`outformat`: output format of the NIF document.
 
 ### Output
 A NIF model with a self defined collection containing the retrieved documents.
 
 ### Example
-Example cURL post for using the `semantic information storage`:  
+Example cURL GET for retrieving documents for query `Berlin` from index `index101`:  
 
 ```
-curl -X POST "http://dev.digitale-kuratierung.de/api/e-lucene/retrieveDocuments?indexName=lucene2&inputType=text&language=en&fields=all&analyzers=standard&hits=50"
+curl -X GET "http://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101/documents?query=Berlin&hits=50"
 ```
