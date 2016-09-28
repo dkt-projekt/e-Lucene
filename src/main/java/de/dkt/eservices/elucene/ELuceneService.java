@@ -35,8 +35,7 @@ public class ELuceneService {
 	@Autowired
 	private IndexDAO indexDAO;
 
-//	@Value("${luceneIndexPath}")
-	@Value("${dkt.storage.data-dir}/lucene")
+	@Value("${dkt.storage.data-dir.lucene}")
 	private String luceneIndexPath;
 
 	public ELuceneService() {
@@ -45,6 +44,7 @@ public class ELuceneService {
 	@PostConstruct
 	public void createLuceneModule(){
 		luceneModule = LuceneModule.getInstance(luceneIndexPath,indexRepository,indexDAO);
+//		System.out.println("DEBUG indexpath:"+luceneIndexPath);
 	}
 
 	public String createIndex(String indexId, String language,String sFields,String sAnalyzers, boolean overwrite) throws Exception {

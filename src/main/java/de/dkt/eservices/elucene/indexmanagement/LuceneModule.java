@@ -69,7 +69,12 @@ public class LuceneModule {
 	private String luceneIndexPath;
 
 	protected LuceneModule (String repositoriesPath,IndexRepository indexRepository, IndexDAO indexDAO){
-		luceneIndexPath = repositoriesPath;
+		if(repositoriesPath.endsWith(File.separator)){
+			luceneIndexPath = repositoriesPath;
+		}
+		else{
+			luceneIndexPath = repositoriesPath + File.separator;
+		}
 		this.indexRepository = indexRepository;
 		this.indexDao=indexDAO;
 	}
@@ -176,7 +181,7 @@ public class LuceneModule {
 
 	public boolean createIndexFiles(String indexId, String language, String sFields, String sAnalyzers, boolean overwrite) throws IOException,ExternalServiceFailedException{
 		//TODO Check if the index exists, then throw Exception.
-		System.out.println(luceneIndexPath + indexId);
+//		System.out.println(luceneIndexPath + indexId);
 		File f = FileFactory.generateOrCreateDirectoryInstance(luceneIndexPath + indexId);
 		Path path = f.toPath();
 		Directory dir = FSDirectory.open(path);

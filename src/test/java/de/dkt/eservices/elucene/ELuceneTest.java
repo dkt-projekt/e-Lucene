@@ -14,6 +14,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -81,6 +82,13 @@ public class ELuceneTest {
 	
 	@Test
 	public void test2_1_createIndex() throws UnirestException, IOException,Exception {
+		ClassPathResource cpr = new ClassPathResource(".");
+		System.out.println("CPR: "+cpr);
+		System.out.println("CPRPATH: "+cpr.getPath());
+		System.out.println("CPREXISTS: "+cpr.exists());
+//		System.out.println("CPRURL: "+cpr.getURL());
+		System.out.println("CPRURL: "+cpr.getFile().getAbsolutePath());
+
 		HttpResponse<String> response = genericPostRequest("")
 				.queryString("indexName", "index45")
 				.queryString("language", "en")
