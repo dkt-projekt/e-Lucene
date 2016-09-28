@@ -36,7 +36,7 @@ public class ELuceneService {
 	private IndexDAO indexDAO;
 
 //	@Value("${luceneIndexPath}")
-	@Value("${dkt.storage.data-dir:lucene/}")
+	@Value("${dkt.storage.data-dir}/lucene")
 	private String luceneIndexPath;
 
 	public ELuceneService() {

@@ -78,8 +78,34 @@ public class ELuceneRestController extends BaseRestController {
         }
 	}
 
-	@RequestMapping(value = "/e-lucene/indexes/{indexId}", method = { RequestMethod.POST })
-	public ResponseEntity<String> createIndex(
+	@RequestMapping(value = "/e-lucene/indexes", method = { RequestMethod.POST })
+	public ResponseEntity<String> createIndexPOST(
+			HttpServletRequest request, 
+			@RequestHeader(value = "Accept", required = false) String acceptHeader,
+			@RequestHeader(value = "Content-Type", required = false) String contentTypeHeader,
+			@RequestParam(value = "indexName", required = false) String indexName,
+			@RequestParam(value = "language", required = false) String language,
+			@RequestParam(value = "fields", required = false) String sFields,
+			@RequestParam(value = "analyzers", required = false) String sAnalyzers,
+			@RequestParam(value = "overwrite", required = false) boolean overwrite,
+            @RequestBody(required = false) String postBody) throws Exception {
+
+        try {
+        	
+        	//TODO what to do with the index ID.
+        	
+        	String result = service.createIndex(indexName, language, sFields, sAnalyzers, overwrite);
+			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "usage", "e-Lucene/createIndex", "Success", "", "Exception", "", "");
+    		return ResponseGenerator.successResponse(result, "text/plain");            
+        } catch (Exception e) {
+        	e.printStackTrace();
+			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "error", "e-Lucene/createIndex", e.getMessage(), "", "Exception", e.getMessage(), "");
+			throw LoggedExceptions.generateLoggedBadRequestException(logger, e.getMessage());
+        }
+	}
+
+	@RequestMapping(value = "/e-lucene/indexes/{indexId}", method = { RequestMethod.PUT })
+	public ResponseEntity<String> createIndexPUT(
 			HttpServletRequest request, 
 			@PathVariable String indexId,
 			@RequestHeader(value = "Accept", required = false) String acceptHeader,
@@ -124,7 +150,7 @@ public class ELuceneRestController extends BaseRestController {
         }
 	}
 
-	@RequestMapping(value = "/e-lucene/indexes/{indexId}/documents", method = { RequestMethod.POST })
+	@RequestMapping(value = "/e-lucene/indexes/{indexId}", method = { RequestMethod.POST })
 	public ResponseEntity<String> addDocument(
 			HttpServletRequest request, 
 			@PathVariable String indexId,
@@ -169,16 +195,67 @@ public class ELuceneRestController extends BaseRestController {
 			throw LoggedExceptions.generateLoggedBadRequestException(logger, e.getMessage());
         }
 	}
+	
+	@RequestMapping(value = "/e-lucene/indexes/{indexId}/{documentId}", method = { RequestMethod.PUT })
+	public ResponseEntity<String> updateDocument(
+			HttpServletRequest request, 
+			@PathVariable String indexId,
+			@PathVariable String documentId,
+			@RequestParam(value = "input", required = false) String input,
+			@RequestParam(value = "i", required = false) String i,
+			@RequestParam(value = "informat", required = false) String informat,
+			@RequestParam(value = "f", required = false) String f,
+			@RequestParam(value = "outformat", required = false) String outformat,
+			@RequestParam(value = "o", required = false) String o,
+			@RequestParam(value = "prefix", required = false) String prefix,
+			@RequestParam(value = "p", required = false) String p,
+			@RequestParam(value = "language", required = false) String language,
+			@RequestHeader(value = "Accept", required = false) String acceptHeader,
+			@RequestHeader(value = "Content-Type", required = false) String contentTypeHeader,
+            @RequestBody(required = false) String postBody) throws Exception {
 
-	@RequestMapping(value = "/e-lucene/indexes/{indexId}/documents", method = { RequestMethod.DELETE })
+		
+		//TODO ------
+		
+		if(input==null || input.equalsIgnoreCase("")){
+			input=postBody;
+			if(input==null || input.equalsIgnoreCase("")){
+				throw LoggedExceptions.generateLoggedBadRequestException(logger, "No document content provided");
+			}
+		}
+        NIFParameterSet nifParameters = this.normalizeNif(input, informat, outformat, postBody, acceptHeader, contentTypeHeader, prefix);
+        Model inModel = null;
+        if (nifParameters.getInformat().equals(RDFConstants.RDFSerialization.PLAINTEXT)) {
+			rdfConversionService.plaintextToRDF(inModel, nifParameters.getInput(),language, nifParameters.getPrefix());
+        } else {
+            inModel = rdfConversionService.unserializeRDF(nifParameters.getInput(), nifParameters.getInformat());
+        }
+        if(inModel==null){
+        	String msg = "The NIF input model is NULL";
+			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "error", "e-Lucene/addDocument", msg, "", "Exception", msg, "");
+			throw LoggedExceptions.generateLoggedBadRequestException(logger, msg);
+        }
+        try {
+        	Model luceneModel = service.addDocument(inModel, indexId);
+			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "usage", "e-Lucene/addDocument", "Success", "", "Exception", "", "");
+    		return createSuccessResponse(luceneModel, nifParameters.getOutformat());            
+        } catch (Exception e) {
+        	e.printStackTrace();
+			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "error", "e-Lucene/addDocument", e.getMessage(), "", "Exception", e.getMessage(), "");
+			throw LoggedExceptions.generateLoggedBadRequestException(logger, e.getMessage());
+        }
+	}
+
+	@RequestMapping(value = "/e-lucene/indexes/{indexId}/{documentId}", method = { RequestMethod.DELETE })
 	public ResponseEntity<String> deleteDocument(
 			HttpServletRequest request, 
 			@PathVariable String indexId,
-			@RequestParam(value = "documentId", required = false) String documentId,
+			@PathVariable String documentId,
 			@RequestHeader(value = "Accept", required = false) String acceptHeader,
 			@RequestHeader(value = "Content-Type", required = false) String contentTypeHeader,
             @RequestBody(required = false) String postBody) throws Exception {
         try {
+        	System.out.println("DOCID: "+documentId);
         	service.deleteDocument(indexId, documentId);
 			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "usage", "e-Lucene/deleteDocument", "Success", "", "Exception", "", "");
 
@@ -191,7 +268,38 @@ public class ELuceneRestController extends BaseRestController {
         }
 	}
 
-	@RequestMapping(value = "/e-lucene/indexes/{indexId}/documents", method = { RequestMethod.GET })
+	@RequestMapping(value = "/e-lucene/indexes/{indexId}/{documentId}", method = { RequestMethod.GET })
+	public ResponseEntity<String> retrieveDocument(
+			HttpServletRequest request, 
+			@PathVariable String indexId,
+			@PathVariable String documentId,
+			@RequestParam(value = "query", required = false) String query,
+			@RequestParam(value = "outformat", required = false) String outformat,
+			@RequestHeader(value = "Accept", required = false) String acceptHeader,
+			@RequestHeader(value = "Content-Type", required = false) String contentTypeHeader,
+			@RequestParam(value = "hits", required = false) int hits,
+            @RequestBody(required = false) String postBody) throws Exception {
+        try {
+        	
+        	//TODO retrieve only a concrete document.
+        	
+            Model outputModel = service.retrieveDocuments(indexId, query, hits);
+            HttpHeaders responseHeaders = new HttpHeaders();
+            String output = rdfConversionService.serializeRDF(outputModel, RDFSerialization.fromValue(outformat));
+			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "usage", "e-Lucene/retrieveDocuments", "Success", "", "Exception", "", "");
+            return new ResponseEntity<String>(output, responseHeaders, HttpStatus.OK);
+        } catch (BadRequestException e) {
+        	e.printStackTrace();
+			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "error", "e-Lucene/retrieveDocuments", e.getMessage(), "", "Exception", e.getMessage(), "");
+			throw LoggedExceptions.generateLoggedBadRequestException(logger, e.getMessage());
+        } catch (ExternalServiceFailedException e) {
+        	e.printStackTrace();
+			InteractionManagement.sendInteraction("dkt-usage@"+request.getRemoteAddr(), "error", "e-Lucene/retrieveDocuments", e.getMessage(), "", "Exception", e.getMessage(), "");
+			throw LoggedExceptions.generateLoggedExternalServiceFailedException(logger, e.getMessage());
+        }
+	}
+	
+	@RequestMapping(value = "/e-lucene/indexes/{indexId}/search", method = { RequestMethod.GET })
 	public ResponseEntity<String> retrieveDocuments(
 			HttpServletRequest request, 
 			@PathVariable String indexId,

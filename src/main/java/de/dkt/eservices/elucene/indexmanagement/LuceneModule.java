@@ -33,6 +33,7 @@ import de.dkt.common.exceptions.LoggedExceptions;
 import de.dkt.common.filemanagement.FileFactory;
 import de.dkt.common.niftools.NIFReader;
 import de.dkt.common.niftools.NIFWriter;
+import de.dkt.eservices.elucene.exceptions.LuceneIndexExistsException;
 import de.dkt.eservices.elucene.exceptions.UnSupportedDocumentParserFormatException;
 import de.dkt.eservices.elucene.indexmanagement.analyzer.AnalyzerFactory;
 import de.dkt.eservices.elucene.indexmanagement.documentparser.DocumentParserFactory;
@@ -43,7 +44,7 @@ import de.dkt.eservices.elucene.indexmanagement.resultconverter.LuceneResultConv
 import eu.freme.common.exception.BadRequestException;
 import eu.freme.common.exception.ExternalServiceFailedException;
 import eu.freme.common.persistence.dao.IndexDAO;
-import eu.freme.common.persistence.model.Index;
+import eu.freme.common.persistence.model.LuceneIndex;
 import eu.freme.common.persistence.repository.IndexRepository;
 
 /**
@@ -82,10 +83,10 @@ public class LuceneModule {
 	
 	public String listIndexes() {
 		try {
-			List<Index> indexesList = indexRepository.findAll();
+			List<LuceneIndex> indexesList = indexRepository.findAll();
 			JSONObject indexes = new JSONObject();
 			int counter = 0;
-			for (Index i : indexesList) {
+			for (LuceneIndex i : indexesList) {
 				indexes.put("index"+counter, i.getIndexId());
 				counter++;
 			}
@@ -219,23 +220,30 @@ public class LuceneModule {
 			if(indexRepository==null){
 				System.out.println("++++++++++++++**************NNNNNNNUUUUUUUULLLLLLLLLLLLLLLLL");
 			}
-			Index index = new Index();
-			index.setIndexId(indexId);
-			index.setFields(sFields);
-			index.setAnalyzers(sAnalyzers);
-			index.setLanguage(language);
-			index.setCreationTime(new Date());
-			index = indexRepository.save(index);
-			return true;
+			LuceneIndex li = indexRepository.findOneByIndexId(indexId);
+			if(li==null){
+				LuceneIndex index = new LuceneIndex();
+				index.setIndexId(indexId);
+				index.setFields(sFields);
+				index.setAnalyzers(sAnalyzers);
+				index.setLanguage(language);
+				index.setCreationTime(new Date());
+				index = indexRepository.save(index);
+				return true;
+			}
+			else{
+				logger.error("There is an existing lucene_index with the same name");
+				throw new LuceneIndexExistsException();
+			}
 		}
 		catch(Exception e){
 			e.printStackTrace();
-			return false;
+			throw e;
 		}
 	}
 
 	public Model deleteAndRetrieveDocumentFromModel(Model docContent,String indexId) throws IOException,ExternalServiceFailedException{
-		Index index = indexRepository.findOneByIndexId(indexId);
+		LuceneIndex index = indexRepository.findOneByIndexId(indexId);
 		if(index==null){
 			String msg = String.format("The index \"%s\" does not exist.",indexId);
         	throw LoggedExceptions.generateLoggedExternalServiceFailedException(logger, msg);
@@ -245,7 +253,7 @@ public class LuceneModule {
 	}
 
 	public Model deleteAndRetrieveDocument(String documentId,String indexId) throws IOException,ExternalServiceFailedException{
-		Index index = indexRepository.findOneByIndexId(indexId);
+		LuceneIndex index = indexRepository.findOneByIndexId(indexId);
 		if(index==null){
 			String msg = String.format("The index \"%s\" does not exist.",indexId);
         	throw LoggedExceptions.generateLoggedExternalServiceFailedException(logger, msg);
@@ -270,7 +278,7 @@ public class LuceneModule {
 	}
 
 	public void deleteDocument(String documentId,String indexId) throws IOException,ExternalServiceFailedException{
-		Index index = indexRepository.findOneByIndexId(indexId);
+		LuceneIndex index = indexRepository.findOneByIndexId(indexId);
 		if(index==null){
 			String msg = String.format("The index \"%s\" does not exist.",indexId);
         	throw LoggedExceptions.generateLoggedExternalServiceFailedException(logger, msg);
@@ -331,7 +339,7 @@ public class LuceneModule {
 	 * @throws ExternalServiceFailedException
 	 */
 	public Model addDocument(Model docContent,String indexId) throws IOException,ExternalServiceFailedException{
-		Index index = indexRepository.findOneByIndexId(indexId);
+		LuceneIndex index = indexRepository.findOneByIndexId(indexId);
 		if(index==null){
 			String msg = String.format("The index \"%s\" does not exist.",indexId);
         	throw LoggedExceptions.generateLoggedExternalServiceFailedException(logger, msg);
@@ -396,7 +404,7 @@ public class LuceneModule {
 	 */
 	public Model search(String indexId,String queryString, int hitsToReturn) throws ExternalServiceFailedException {
 		try{
-			Index index = indexRepository.findOneByIndexId(indexId);
+			LuceneIndex index = indexRepository.findOneByIndexId(indexId);
 			if(index==null){
 				String msg = String.format("The index \"%s\" does not exist.",indexId);
 	        	throw LoggedExceptions.generateLoggedExternalServiceFailedException(logger, msg);

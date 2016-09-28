@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eu.freme.common.persistence.model.Index;
+import eu.freme.common.persistence.model.LuceneIndex;
 import eu.freme.common.persistence.repository.IndexRepository;
 
 /**
@@ -25,7 +25,7 @@ public class IndexDAO {
 
 	@Transactional
 	public void deleteByIndexId(String indexId) {
-		Index index = indexRepository.findOneByIndexId(indexId);
+		LuceneIndex index = indexRepository.findOneByIndexId(indexId);
 		entityManager.remove(index);
 	}
 }

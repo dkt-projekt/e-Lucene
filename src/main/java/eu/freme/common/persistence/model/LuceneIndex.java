@@ -7,23 +7,24 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Table;
 
 /**
  * @author Julian Moreno Schneider jumo04@dfki.de
  *
  */
 @Entity
-public class Index {
+public class LuceneIndex {
 
 	public enum Status {
 		CREATED
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	Integer id;
+//	@GeneratedValue(strategy = GenerationType.AUTO)
+//	Integer id;
 
 //	@JoinColumn(name = "indexId")
+	@Id
 	String indexId;
 	String fields;
 	String analyzers;
@@ -33,27 +34,18 @@ public class Index {
 
 	Date creationTime;
 
-	public Index() {
+	public LuceneIndex() {
 	}
 
-	public Index(Integer id, String indexId, String fields, String analyzers, Status status, String language,
+	public LuceneIndex(String indexId, String fields, String analyzers, Status status, String language,
 			Date creationTime) {
 		super();
-		this.id = id;
 		this.indexId = indexId;
 		this.fields = fields;
 		this.analyzers = analyzers;
 		this.status = status;
 		this.language = language;
 		this.creationTime = creationTime;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public String getIndexId() {

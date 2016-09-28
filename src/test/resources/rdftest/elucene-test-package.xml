@@ -12,5 +12,3 @@
 	<import resource="classpath:spring-configurations/test-helper.xml" />
 	
 </beans>
-
-

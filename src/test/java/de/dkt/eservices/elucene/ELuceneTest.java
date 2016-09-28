@@ -3,6 +3,7 @@ package de.dkt.eservices.elucene;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.util.UriUtils;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.mashape.unirest.http.HttpResponse;
@@ -79,7 +81,8 @@ public class ELuceneTest {
 	
 	@Test
 	public void test2_1_createIndex() throws UnirestException, IOException,Exception {
-		HttpResponse<String> response = genericPostRequest("/index45")
+		HttpResponse<String> response = genericPostRequest("")
+				.queryString("indexName", "index45")
 				.queryString("language", "en")
 				.queryString("fields", "all")
 				.queryString("analyzers", "standard")
@@ -106,7 +109,8 @@ public class ELuceneTest {
 	
 	@Test
 	public void test3_1_createIndex() throws UnirestException, IOException,Exception {
-		HttpResponse<String> response = genericPostRequest("/index55")
+		HttpResponse<String> response = genericPostRequest("")
+				.queryString("indexName", "index55")
 				.queryString("language", "en")
 				.queryString("fields", "all")
 				.queryString("analyzers", "standard")
@@ -131,7 +135,7 @@ public class ELuceneTest {
 
 	@Test
 	public void test3_3_addDocument() throws UnirestException, IOException,Exception {
-		HttpResponse<String> response = genericPostRequest("/index55/documents")
+		HttpResponse<String> response = genericPostRequest("/index55")
 				.queryString("language", "en")
 				.queryString("informat", "text/turtle")
 				.queryString("outformat", "text/turtle")
@@ -150,7 +154,7 @@ public class ELuceneTest {
 
 	@Test
 	public void test3_4_addDocument() throws UnirestException, IOException,Exception {
-		HttpResponse<String> response = genericPostRequest("/index55/documents")
+		HttpResponse<String> response = genericPostRequest("/index55")
 				.queryString("language", "en")
 				.queryString("informat", "text/turtle")
 				.queryString("outformat", "text/turtle")
@@ -169,7 +173,7 @@ public class ELuceneTest {
 
 	@Test
 	public void test3_5_addDocument() throws UnirestException, IOException,Exception {
-		HttpResponse<String> response = genericPostRequest("/index55/documents")
+		HttpResponse<String> response = genericPostRequest("/index55")
 				.queryString("language", "en")
 				.queryString("informat", "text/turtle")
 				.queryString("outformat", "text/turtle")
@@ -188,7 +192,7 @@ public class ELuceneTest {
 
 	@Test
 	public void test3_6_retrieveDocuments() throws UnirestException, IOException,Exception {
-		HttpResponse<String> response = genericGetRequest("/index55/documents")
+		HttpResponse<String> response = genericGetRequest("/index55/search")
 				.queryString("query", "Sanjurjo")
 				.queryString("hits", "10")
 				.queryString("informat", "text/turtle")
@@ -209,8 +213,8 @@ public class ELuceneTest {
 
 	@Test
 	public void test3_7_deleteDocument() throws UnirestException, IOException,Exception {
-		HttpResponse<String> response = genericDeleteRequest("/index55/documents")
-				.queryString("documentId", "http://dkt.dfki.de/examples/#char=0,805")
+		HttpResponse<String> response = genericDeleteRequest("/index55/"+URLEncoder.encode(URLEncoder.encode("http://dkt.dfki.de/examples/#char=0,805", "UTF-8"), "UTF-8"))
+//				.queryString("documentId", "")
 				.asString();
 		Assert.assertEquals(200, response.getStatus());
 		assertTrue(response.getBody().length() > 0);
@@ -232,7 +236,8 @@ public class ELuceneTest {
 	
 	@Test
 	public void test4_1_createIndex() throws UnirestException, IOException,Exception {
-		HttpResponse<String> response = genericPostRequest("/index55GER")
+		HttpResponse<String> response = genericPostRequest("")
+				.queryString("indexName", "index55GER")
 				.queryString("language", "de")
 				.queryString("fields", "all")
 				.queryString("analyzers", "standard")
@@ -244,7 +249,7 @@ public class ELuceneTest {
 
 	@Test
 	public void test4_3_addDocument() throws UnirestException, IOException,Exception {
-		HttpResponse<String> response = genericPostRequest("/index55GER/documents")
+		HttpResponse<String> response = genericPostRequest("/index55GER")
 				.queryString("language", "de")
 				.queryString("informat", "text/turtle")
 				.queryString("outformat", "text/turtle")
@@ -263,7 +268,7 @@ public class ELuceneTest {
 
 	@Test
 	public void test4_4_addDocument() throws UnirestException, IOException,Exception {
-		HttpResponse<String> response = genericPostRequest("/index55GER/documents")
+		HttpResponse<String> response = genericPostRequest("/index55GER")
 				.queryString("language", "de")
 				.queryString("informat", "text/turtle")
 				.queryString("outformat", "text/turtle")
@@ -282,7 +287,7 @@ public class ELuceneTest {
 
 	@Test
 	public void test4_6_retrieveDocuments() throws UnirestException, IOException,Exception {
-		HttpResponse<String> response = genericGetRequest("/index55GER/documents")
+		HttpResponse<String> response = genericGetRequest("/index55GER/search")
 				.queryString("query", "Berlin")
 				.queryString("hits", "10")
 				.queryString("informat", "text/turtle")
@@ -302,9 +307,6 @@ public class ELuceneTest {
 	@Test
 	public void test4_9_deleteIndex() throws UnirestException, IOException,Exception {
 		HttpResponse<String> response = genericDeleteRequest("/index55GER")
-				.queryString("language", "en")
-				.queryString("fields", "all")
-				.queryString("analyzers", "standard")
 				.asString();
 		Assert.assertEquals(200, response.getStatus());
 		assertTrue(response.getBody().length() > 0);
