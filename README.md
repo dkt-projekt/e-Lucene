@@ -2,7 +2,7 @@
 
 The e-Lucene module performs full-text storage and retrieval of documents. It is an index storage system that allows users to store and retrieve documents based on full-text search.
 
-**Please note** that in order to install and use this module, the code expects a folder for storage that has to be created manually. The location of this folder must be `/opt/storage/luceneStorage` and full reading and writing rights have to be assigned to it (e.g. `chmod 775 /opt/storage/luceneStorage`).
+**Please note** that in order to install and use this module, the code expects a folder for storage that has to be created manually. The location of this folder must be `/opt/storage/luceneStorage` and full reading and writing rights have to be assigned to it (e.g. `chmod 775 /opt/storage/luceneStorage `).
 
 ## List Indexes
 Allows to check the available indexes.
