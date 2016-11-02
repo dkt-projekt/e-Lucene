@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.dkt</groupId>
   <artifactId>e-lucene</artifactId>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   
   <properties>
 		<!-- Generic properties -->
@@ -113,6 +113,6 @@
         <connection>scm:git:git@github.com:dkt-projekt/e-Lucene.git</connection>
         <url>scm:git:git@github.com/dkt-projekt/e-Lucene.git</url>
         <developerConnection>scm:git:git@github.com:dkt-projekt/e-Lucene.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>e-lucene-0.4</tag>
 </scm>
 </project>
