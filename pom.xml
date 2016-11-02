@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.dkt</groupId>
   <artifactId>e-lucene</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.4-SNAPSHOT</version>
   
   <properties>
 		<!-- Generic properties -->
@@ -14,8 +14,17 @@
   <parent>
   	<groupId>eu.freme.e-services</groupId>
   	<artifactId>e-service-parent</artifactId>
-  	<version>0.1</version>
+  	<version>0.9</version>
   </parent>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5.3</version>
+      </plugin>
+    </plugins>
+  </build>
     <dependencies>
   	<dependency>
   		<groupId>eu.freme.bservices</groupId>
@@ -50,7 +59,7 @@
 		<dependency>
 			<groupId>de.dkt</groupId>
 			<artifactId>DKTCommon</artifactId>
-			<version>0.4-SNAPSHOT</version>
+			<version>0.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.neo4j</groupId>
@@ -100,4 +109,10 @@
 			<url>http://v35731.1blu.de:8081/nexus/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+	<scm>
+        <connection>scm:git:git@github.com:dkt-projekt/e-Lucene.git</connection>
+        <url>scm:git:git@github.com/dkt-projekt/e-Lucene.git</url>
+        <developerConnection>scm:git:git@github.com:dkt-projekt/e-Lucene.git</developerConnection>
+        <tag>HEAD</tag>
+</scm>
 </project>
