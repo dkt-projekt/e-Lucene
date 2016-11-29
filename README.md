@@ -8,7 +8,7 @@ The e-Lucene module performs full-text storage and retrieval of documents. It is
 Allows to check the available indexes.
 
 ### Endpoint
-[GET] http://api.digitale-kuratierung.de/api/e-lucene/indexes
+[GET] https://api.digitale-kuratierung.de/api/e-lucene/indexes
 
 ### Input
 Nothing.
@@ -20,14 +20,14 @@ A json string containing information about the available indexes.
 Example cURL get for getting the list of available indexes:
 
 ```
-curl "http://dev.digitale-kuratierung.de/api/e-lucene/indexes"
+curl "https://dev.digitale-kuratierung.de/api/e-lucene/indexes"
 ```
 
 ## Create an Index
 Allows to creation of an index in order to, later, add and index documents with it.
 
 ### Endpoint
-[POST] http://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}
+[POST] https://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}
 
 ### Input
 `indexId`: Name for the lucene index that is implicitly given in the URL.
@@ -44,14 +44,14 @@ A string specifying if the index has been correctly created or if there was an e
 Example cURL post for using the `document storage`:
 
 ```
-curl -X POST "http://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101?language=en&fields=all&analyzers=standard"
+curl -X POST "https://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101?language=en&fields=all&analyzers=standard"
 ```
 
 ## Delete an Index
 Allows to delete an index.
 
 ### Endpoint
-[DELETE] http://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}
+[DELETE] https://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}
 
 ### Input
 `indexId`: Name for the lucene index that is implicitly given in the URL.
@@ -63,14 +63,14 @@ A string specifying if the index has been correctly deleted or if there was an e
 Example cURL DELETE request for deleting index `index101`:
 
 ```
-curl -X DELETE "http://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101"
+curl -X DELETE "https://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101"
 ```
 
 ## Add a Document to an Index
 Allows the storage of documents into the specified index.
 
 ### Endpoint
-[POST] http://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}/documents
+[POST] https://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}/documents
 
 ### Input
 The API conforms to the general NIF API specifications. For more details, see: http://persistence.uni-leipzig.org/nlp2rdf/specification/api.html
@@ -103,14 +103,14 @@ curl -X POST -d '@prefix dktnif: <http://dkt.dfki.de/ontologies/nif#> .
         a               nif:RFC5147String , nif:String , nif:Context ;
         nif:beginIndex  "0"^^xsd:nonNegativeInteger ;
         nif:endIndex    "26"^^xsd:nonNegativeInteger ;
-        nif:isString    "Welcome to Berlin in 2016."^^xsd:string .' "http://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101/documents?language=en&fields=all&analyzers=standard"
+        nif:isString    "Welcome to Berlin in 2016."^^xsd:string .' "https://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101/documents?language=en&fields=all&analyzers=standard"
 ```
 
 ## Delete a Document from an Index
 Allows the deletion of documents from the specified index.
 
 ### Endpoint
-[DELETE] http://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}/documents
+[DELETE] https://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}/documents
 
 ### Input
 
@@ -124,14 +124,14 @@ A string specifying if the document has been correctly deleted or if there was a
 Example cURL DELETE for deleting the document `http://dkt.dfki.de/documents/#char=0,26`:
 
 ```
-curl -X DELETE "http://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101/documents?documentId=http%3A%2F%2Fdkt.dfki.de%2Fdocuments%2F%23char%3D0%2C26"
+curl -X DELETE "https://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101/documents?documentId=http%3A%2F%2Fdkt.dfki.de%2Fdocuments%2F%23char%3D0%2C26"
 ```
 
 ## Retrieval of documents
 The Retrieval of documents endpoint retrieves documents based on a plain text query. 
 
 ### Endpoint
-[GET] http://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}/documents
+[GET] https://api.digitale-kuratierung.de/api/e-lucene/indexes/{indexId}/documents
 
 ### Input
 
@@ -147,5 +147,5 @@ A NIF model with a self defined collection containing the retrieved documents.
 Example cURL GET for retrieving documents for query `Berlin` from index `index101`:  
 
 ```
-curl -X GET "http://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101/documents?query=Berlin&hits=50"
+curl -X GET "https://dev.digitale-kuratierung.de/api/e-lucene/indexes/index101/documents?query=Berlin&hits=50"
 ```
