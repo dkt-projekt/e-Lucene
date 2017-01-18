@@ -133,10 +133,6 @@ public class ELuceneRestController extends BaseRestController {
 			@PathVariable String indexId,
 			@RequestHeader(value = "Accept", required = false) String acceptHeader,
 			@RequestHeader(value = "Content-Type", required = false) String contentTypeHeader,
-			@RequestParam(value = "language", required = false) String language,
-			@RequestParam(value = "fields", required = false) String sFields,
-			@RequestParam(value = "analyzers", required = false) String sAnalyzers,
-			@RequestParam(value = "overwrite", required = false) boolean overwrite,
             @RequestBody(required = false) String postBody) throws Exception {
 
         try {
